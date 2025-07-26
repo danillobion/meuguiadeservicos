@@ -5,15 +5,23 @@ namespace App\Http\Controllers;
 use App\Enums\CatalogoTipo;
 use App\Enums\TagEstabelecimento;
 use App\Enums\TagServico;
+use App\Models\Catalogo;
+use App\Models\Contato;
+use App\Models\Endereco;
 use App\Models\Tag;
+use App\Models\User;
 use App\Services\CatalogoService;
 use App\Services\CepService;
+use App\Services\UserService;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class CatalogoController extends Controller
 {
 
+    //tela de cadastro (deslogado)
     public function index()
     {
         $tipos = CatalogoTipo::toSelect();
@@ -38,38 +46,53 @@ class CatalogoController extends Controller
             'tipos' => $tipos,
             'tagServicos' => $tagServicos,
             'tagEstabelecimentos' => $tagEstabelecimentos
-        ]
-    );
+            ]
+        );
     }
-
+    // funcao de cadastrar (deslogado)
     public function store(Request $request)
     {
         validator($request->all(), [
-            'nome' => 'required',
-            'nome_estabelecimento' => 'nullable',
+            'id' => 'nullable',
+            'nome' => 'nullable',
             'descricao' => 'required',
             'tipo' => 'required',
-            'cep' => 'required',
-            'logradouro' => 'nullable',
-            'bairro' => 'nullable',
-            'cidade' => 'required',
-            'uf' => 'required',
-            'complemento' => 'nullable',
-            'numero' => 'required',
-            'telefone' => 'required',
-            'email' => 'required|email',
-            'senha' => 'required',
-            'confirmacao_senha' => 'required|same:senha',
+
+            'endereco.id' => 'nullable',
+            'endereco.cep' => 'required',
+            'endereco.uf' => 'required',
+            'endereco.cidade' => 'required',
+            'endereco.bairro' => 'nullable',
+            'endereco.logradouro' => 'nullable',
+            'endereco.complemento' => 'nullable',
+            'endereco.numero' => 'required',
+
+            'contato.id' => 'nullable',
+            'contato.telefone' => 'required',
+            'contato.email' => 'nullable',
+            'contato.whatsapp' => 'nullable',
+            'contato.telegram' => 'nullable',
+            'contato.site' => 'nullable',
+            'contato.facebook' => 'nullable',
+            'contato.instagram' => 'nullable',
+            
             'habilidades' => 'required|array',
+            'novo_usuario' => 'nullable',
         ])->validate();
 
         $catalogoService = new CatalogoService();
-        $catalogoService->store($request);
+        $resultado = $catalogoService->store($request);
 
-        return redirect()->route('login')->with('success', 'Cadastro realizado com sucesso! Faça login para continuar.');
+        // novo usuario eu logo
+        if($resultado['id']){
+            event(new Registered($resultado));
+            Auth::login($resultado);
+            return redirect(route('apresentacao.index', absolute: false));
+        }
         
-    }
+        return redirect()->route('login')->with('message', 'Cadastro concluído.');
 
+    }
     public function consultarCep($cep){
         $cepService = new CepService();
         $resultado = $cepService->consultar($cep);

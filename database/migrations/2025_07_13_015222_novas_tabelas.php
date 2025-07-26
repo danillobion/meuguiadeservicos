@@ -31,11 +31,25 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        // Contatos
+        Schema::create('contatos', function (Blueprint $table) {
+            $table->id();
+            $table->string('telefone', 11)->nullable();
+            $table->string('whatsapp', 11)->nullable();
+            $table->string('email')->nullable();
+            $table->string('site')->nullable();
+            $table->string('facebook')->nullable();
+            $table->string('instagram')->nullable();
+            $table->string('telegram')->nullable();
+            $table->timestamps();
+        });
+
         // Catálogos
         Schema::create('catalogos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('endereco_id')->constrained()->onDelete('cascade');
+            $table->foreignId('contato_id')->constrained()->onDelete('cascade');
             $table->string('caminho_imagem', 512)->nullable();
             $table->string('nome');
             $table->string('descricao')->nullable();
@@ -55,6 +69,7 @@ return new class extends Migration
     {
         Schema::dropIfExists('catalogo_tag');
         Schema::dropIfExists('catalogos');
+        Schema::dropIfExists('contatos');
         Schema::dropIfExists('enderecos');
         Schema::dropIfExists('tags');
     }

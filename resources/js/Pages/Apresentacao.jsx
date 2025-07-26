@@ -1,15 +1,31 @@
 import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
 import CardServico from '@/Components/ui/CardServico';
 import MenuSuperior from '@/Layouts/MenuSuperior';
-import { Search } from 'lucide-react';
+import { Search,MapPin } from 'lucide-react';
 import { useState,useEffect } from 'react';
+import SelectInput from '@/Components/SelectInput';
+import Masonry from 'react-masonry-css';
+import { Head, Link } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 
 
 export default function Apresentacao() 
 {
+  const [listaCidades, setListaCidades] = useState([]);
   const [listaServicos, setListaServicos] = useState([]);
   const [listaTags, setListaTags] = useState([]);
+
+  const [cidade, setCidade] = useState();
   const [busca, setBusca] = useState('');
+  const [tagSelecionada, setTagSelecionada] = useState(null);
+
+  const breakpointColumnsObj = {
+    default: 4,
+    1280: 3,
+    1024: 2,
+    640: 1,
+  };
+
   
   const cabecalho = {
     titulo: "Serviço e/ou Estabelecimento",
@@ -19,9 +35,13 @@ export default function Apresentacao()
     ],
   };
 
-  const buscar = async (texto = null, tag_id = null) => {
+  const buscar = async (cidade = null, texto = null, tag_id = null) => {
+    const cidadeParam = cidade && cidade.trim() !== '' ? cidade : '-';
+    const textoParam = texto && texto.trim() !== '' ? texto : '-';
+    const tagParam = tag_id ? tag_id : '-';
     try {
-      const response = await axios.get(route('apresentacao.pesquisar', {texto: texto, tag_id: tag_id})); 
+      const response = await axios.get(`/pesquisar/${cidadeParam}/${textoParam}/${tagParam}`);
+      setListaCidades(response.data.cidades);
       setListaServicos(response.data.servicos);
       setListaTags(response.data.tags);
     } catch (error) {
@@ -29,16 +49,26 @@ export default function Apresentacao()
     }
   };
 
-  const handleInputChange = (e) => {
-    const texto = e.target.value;
-    setBusca(texto);
+  const handleSelectChange = (e) => {
+    const novaCidade = e.target.value;
+    setCidade(novaCidade);
+    buscar(novaCidade, busca, tagSelecionada);
+  };
 
-    if (texto.length >= 3) {
-      buscar(texto, null);
-    } else if (texto.length === 0) {
-      // Limpar busca caso o usuário apague tudo
-      buscar(null, null);
+  const handleInputChange = (e) => {
+    const novoTexto = e.target.value;
+    setBusca(novoTexto);
+    if (novoTexto.length >= 3) {
+      buscar(cidade, novoTexto, tagSelecionada);
+    } else if (novoTexto.length === 0) {
+      buscar(cidade, '', tagSelecionada);
     }
+  };
+
+  const handleTagClick = (tagId) => {
+    const novaTag = tagId === tagSelecionada ? null : tagId; // Toggle
+    setTagSelecionada(novaTag);
+    buscar(cidade, busca, novaTag);
   };
 
   useEffect(() => {
@@ -47,53 +77,96 @@ export default function Apresentacao()
 
   return (
     <MenuSuperior>
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <CabecalhoPagina cabecalho={cabecalho} />
+        <Head title={cabecalho.titulo} />
+        <div className="p-3 mx-auto max-w-7xl sm:px-6 lg:px-8 pb-12">
 
-        <div className="relative w-full">
+        <div className="flex flex-col items-center pt-8 pb-8">
+          <motion.h1
+            className="mb-4 text-4xl font-bold text-gray-900 sm:text-7xl"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+          >
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600">
+              Meu guia de serviços
+            </span>
+          </motion.h1>
+          <motion.span
+            className="sm:w-3/4 text-center text-gray-600"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+          >
+            O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro.          
+          </motion.span>        
+        </div>
+          
+        <div className="flex flex-col md:flex-row gap-4 w-full">
+          {/* Campo de pesquisa maior */}
+          <div className="relative w-full md:w-2/6">
+            <MapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
+            <SelectInput
+              id="tipo"
+              name="tipo"
+              value={cidade}
+              onChange={handleSelectChange}
+              className="bg-white shadow-xl text-2xl py-4 pl-12 pr-4 w-full border border-gray-300 rounded-xl focus:outline-none"
+            >
+              <option value="">Selecione a cidade</option>
+              {listaCidades.map((item,index) => (
+                <option key={index} value={item.cidade}>
+                  {item.cidade}/{item.uf}
+                </option>
+              ))}
+            </SelectInput>
+          </div>
+
+          {/* Outro campo menor */}
+          <div className="relative w-full md:w-4/6">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-6 h-6" />
             <input
-            type="text"
-            value={busca}
-            onChange={handleInputChange}
-            className="bg-white shadow-lg text-2xl py-4 pl-12 pr-4 w-full border border-gray-300 rounded-xl focus:outline-none"
-            placeholder="Pesquise pelo serviço ou estabelecimento"
+              type="text"
+              value={busca}
+              onChange={handleInputChange}
+              className="bg-white shadow-lg text-2xl py-4 pl-12 pr-4 w-full border border-gray-300 rounded-xl focus:outline-none"
+              placeholder="Pesquisar por serviço ou estabelecimento"
             />
+          </div>
         </div>
 
-        <div className="mt-7 mb-4 flex flex-wrap items-center gap-2">
-            <h6 className="text-gray-600">Tags: </h6>
-            {listaTags.map((item, index) => (
-              <button
+        <div className='flex flex-col items-center'>
+          <div className="mt-7 w-4/5 mb-0 flex flex-wrap gap-2 justify-center">
+              {listaTags.map((item, index) => (
+                <button
                 key={index}
-                onClick={() => buscar("-", item.id)}
-                className="flex items-center bg-blue-200 rounded-full px-2 py-1 hover:bg-blue-300 shadow-md hover:shadow transition duration-500"
-              >
-                <span className="text-gray-700 text-sm font-semibold">
-                  {item.nome} {item.quantidade}
-                </span>
-              </button>
-            ))}
+                onClick={() => handleTagClick(item.id)}
+                className={`flex items-center rounded-full px-2 py-1 shadow-md transition duration-500
+                  ${tagSelecionada === item.id ? 'bg-blue-500 text-white' : 'bg-blue-200 hover:bg-blue-300'}
+                  `}
+                  >
+                  <span className="text-sm font-semibold">
+                    {item.nome} {item.quantidade}
+                  </span>
+                </button>
+              ))}
+          </div>
         </div>
 
         <div className="mt-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {listaServicos.map((card) => (
-                <CardServico key={card.id} conteudo={card} />
-            ))}
-            </div>
+            {listaServicos.length > 0 ? (
+              <Masonry
+                breakpointCols={breakpointColumnsObj}
+                className="my-masonry-grid"
+                columnClassName="my-masonry-grid_column"
+              >
+                {listaServicos.map((card) => (
+                  <CardServico key={card.id} conteudo={card} />
+                ))}
+              </Masonry>
+            ) : (
+              <p className="text-center text-gray-500">Nenhum registro encontrado.</p>
+            )}
         </div>
-
-        {/* Exibe resultados filtrados */}
-        {/* <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {servicosFiltrados.length > 0 ? (
-            servicosFiltrados.map((card) => (
-              <CardServico key={card.id} conteudo={card} />
-            ))
-          ) : (
-            <p className="col-span-full text-center text-gray-500">Nenhum serviço encontrado.</p>
-          )}
-        </div> */}
 
         </div>
     </MenuSuperior>

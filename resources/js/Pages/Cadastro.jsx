@@ -4,38 +4,57 @@ import TextInput from '@/Components/TextInput';
 import MenuSuperior from '@/Layouts/MenuSuperior';
 import { Link, Head, useForm } from '@inertiajs/react';
 import Select from 'react-select';
-import { Search } from 'lucide-react';
+import { AlertCircleIcon, Search, Terminal } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
 import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
-import { toast } from "sonner"
+import { toast } from 'sonner';
 import axios from 'axios';
+import { formatarTelefone } from '@/utils/formatarTelefone';
+import { formatarCep } from '@/utils/formatarCEP';
+import TextAreaInput from '@/Components/TextAreaInput';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import InputError from '@/Components/InputError';
 
 export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
   const cabecalho = {
-    titulo: "Cadastre-se",
+    titulo: 'Cadastre-se',
     migalhas: [
-      { href: "/", label: "Inicio" },
-      { href: "#", label: "Cadastre-se" },
+      { href: '/', label: 'Inicio' },
+      { href: '#', label: 'Cadastre-se' },
     ],
   };
 
   const { data, setData, post, processing, errors, reset } = useForm({
+    id: '',
     nome: '',
-    email: '',
+    descricao: '',
+    habilidades: [],
+    tipo: '',
+    endereco: {
+      id: '',
+      cep: '',
+      uf: '',
+      cidade: '',
+      bairro: '',
+      logradouro: '',
+      complemento: '',
+      numero: '',
+    },
+    contato: {
+      id: '',
+      telefone: '',
+      email: '',
+      whatsapp: '',
+      telegram: '',
+      site: '',
+      facebook: '',
+      instagram: '',
+    },
+    nome_completo: '',
+    email_login: '',
     senha: '',
     confirmacao_senha: '',
-    nome_estabelecimento: '',
-    descricao: '',
-    tipo: '',
-    telefone: '',
-    cep: '',
-    uf: '',
-    cidade: '',
-    bairro: '',
-    logradouro: '',
-    numero: '',
-    complemento: '',
-    habilidades: [],
+    novo_usuario: true,
   });
 
   const selectRef = useRef(null);
@@ -45,268 +64,274 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
     setTagHabilidades([]);
     resetSelect();
     setData('habilidades', []);
-    if(data.tipo === 'SEV') {
+    if (data.tipo === 'SEV') {
       setTagHabilidades(tagServicos);
-    } else if(data.tipo === 'EST') {
-      setTagHabilidades(tagEstabelecimentos);       
+    } else if (data.tipo === 'EST') {
+      setTagHabilidades(tagEstabelecimentos);
     }
   }, [data.tipo]);
 
   const handleCep = async (cep) => {
     try {
       const responde = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-      const data = responde.data;
-      setData('uf', data.uf);
-      setData('cidade', data.localidade);
-      setData('bairro', data.bairro);
-      setData('logradouro', data.logradouro);
-      setData('complemento', data.complemento);
-      toast.success("CEP encontrado com sucesso.");
+      const dataCep = responde.data;
+      setData('endereco', {
+        ...data.endereco,
+        uf: dataCep.uf,
+        cidade: dataCep.localidade,
+        bairro: dataCep.bairro,
+        logradouro: dataCep.logradouro,
+        complemento: dataCep.complemento,
+      });
+      toast.success('CEP encontrado com sucesso.');
     } catch (error) {
-      toast.error("CEP inválido.");
+      toast.error('CEP inválido.');
     }
-  }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    post(route('catalogo.store'));
+    console.log("opa: ", e);
+
+    post(route('catalogo.store'), {
+      onSuccess: () => {
+        // Nada a fazer aqui — o backend já está redirecionando
+      },
+      onError: () => {
+        toast.error("Erro ao cadastrar.");
+      }
+    });
   };
+
 
   const resetSelect = () => {
     if (selectRef.current) {
-      // react-select tem método clearValue() que limpa seleção
       selectRef.current.clearValue();
     }
-  }
+  };
 
   return (
     <MenuSuperior>
       <Head title="Cadastro" />
-      <div className="mx-auto max-w-2xl sm:px-6 lg:px-8 pb-12">
+      <div className="pr-3 pl-3 mx-auto max-w-3xl sm:px-6 lg:px-8 pb-12">
         <CabecalhoPagina cabecalho={cabecalho} />
         <div className="overflow-hidden bg-white shadow-lg sm:rounded-xl p-6">
           <h2 className="text-2xl text-gray-600 mb-4">Informações</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Nome */}
-            <div className="space-y-2">
-              <InputLabel htmlFor="nome" value="Nome e sobrenome" />
-              <TextInput
-                id="nome"
-                type="text"
-                name="nome"
-                value={data.nome}
-                onChange={e => setData('nome', e.target.value)}
-                className="mt-1 block w-full"
-                autoComplete="nome"
-                placeholder="Digite seu nome e sobrenome"
-                required
-              />
-              {errors.nome && <div className="text-red-600 text-sm">{errors.nome}</div>}
-            </div>
+
+            <Alert className="bg-blue-50 text-blue-800">
+              <AlertCircleIcon className='size-5' />
+              <AlertTitle>O cadastro é rápido, fácil e gratuito!</AlertTitle>
+              <AlertDescription>
+                <p>Preencha os campos abaixo para divulgar o seu serviço ou estabelecimento.</p>
+              </AlertDescription>
+            </Alert>
 
             {/* Tipo */}
             <div className="space-y-2">
-              <InputLabel htmlFor="tipo" value="Tipo" />
+              <InputLabel htmlFor="tipo" value="Tipo de divulgação"/>
               <SelectInput
                 id="tipo"
                 name="tipo"
                 value={data.tipo}
-                onChange={e => setData('tipo', e.target.value)}
-                required
+                onChange={(e) => setData('tipo', e.target.value)}
+                className="mt-1 block w-full pr-4 text-2xl text-gray-500 py-3"
               >
-                <option value="">Selecione o tipo</option>
-                {tipos.map(tipoItem => (
+                <option value="">Selecione o tipo de divulgação</option>
+                {tipos.map((tipoItem) => (
                   <option key={tipoItem.value} value={tipoItem.value}>
                     {tipoItem.label}
                   </option>
                 ))}
               </SelectInput>
-              {errors.tipo && <div className="text-red-600 text-sm">{errors.tipo}</div>}
+              <InputError message={errors.tipo} className="mt-2" />
             </div>
 
-            {/* Nome Estabelecimento - só se for EST */}
-            {data.tipo === "EST" && (
+            {/* Nome */}
+            {data.tipo && (
               <div className="space-y-2">
-                <InputLabel htmlFor="nome_estabelecimento" value="Nome do estabelecimento" />
-                <TextInput
-                  id="nome_estabelecimento"
-                  type="text"
-                  name="nome_estabelecimento"
-                  value={data.nome_estabelecimento}
-                  onChange={e => setData('nome_estabelecimento', e.target.value)}
-                  className="mt-1 block w-full"
-                  autoComplete="nome_estabelecimento"
-                  placeholder="Digite o nome do seu estabelecimento"
-                  required
+                <InputLabel
+                  htmlFor="nome"
+                  value={data.tipo === 'SEV' ? 'Nome do seu serviço' : 'Nome do seu estabelecimento'}
                 />
-                {errors.nome_estabelecimento && <div className="text-red-600 text-sm">{errors.nome_estabelecimento}</div>}
+                <TextInput
+                  id="nome"
+                  type="text"
+                  name="nome"
+                  value={data.nome}
+                  onChange={(e) => setData('nome', e.target.value)}
+                  className="mt-1 block w-full py-4 pr-4 text-2xl"
+                  autoComplete="nome"
+                  placeholder={
+                    data.tipo === 'SEV'
+                      ? 'Digite o nome do seu serviço'
+                      : 'Digite o nome do seu estabelecimento'
+                  }
+                  
+                />
+                <span className='text-gray-500 text-sm'>
+                  {data.tipo === 'SEV' ? 'Exemplo: Pintor de Parede, Serviços de Limpeza, etc' : ''}
+                </span>
+                {errors.nome && <div className="text-red-600 text-sm">{errors.nome}</div>}
               </div>
             )}
 
-            {/* Habilidades - usando react-select */}
+            {/* Habilidades */}
             {data.tipo && (
               <div className="space-y-2">
-                <InputLabel htmlFor="habilidades" value="Habilidades" />
-                <Select 
+                <InputLabel htmlFor="habilidades" value={data.tipo === 'SEV' ? 'Habilidades do seu serviço' : 'Categorias do seu estabelecimento'} />
+                <Select
                   ref={selectRef}
-                  options={tagHabilidades} 
-                  isMulti 
+                  options={tagHabilidades}
+                  isMulti
                   value={data.habilidades}
                   onChange={(e) => setData('habilidades', e)}
-                  placeholder="Selecione uma ou mais habilidades"
-                  required
+                  placeholder={
+                    data.tipo === 'SEV'
+                      ? 'Selecione as habilidades do seu serviço'
+                      : 'Selecione as categorias do seu estabelecimento'
+                  }
+                  className="mt-1 block w-full text-2xl my-5"
                 />
+                <span className='text-gray-500 text-sm'>
+                  {data.tipo === 'SEV' ? 'Exemplo: Pintor, Encanador, etc' : 'Exemplo: Restaurante, Bar, Hotel, etc'}
+                </span>
                 {errors.habilidades && <div className="text-red-600 text-sm">{errors.habilidades}</div>}
               </div>
             )}
 
-            {/* Descrição - se tiver tipo */}
+            {/* Descrição */}
             {data.tipo && (
               <div className="space-y-2">
                 <InputLabel htmlFor="descricao" value="Descrição" />
-                <TextInput
+                <TextAreaInput
                   id="descricao"
-                  type="text"
                   name="descricao"
                   value={data.descricao}
-                  onChange={e => setData('descricao', e.target.value)}
-                  className="mt-1 block w-full"
+                  onChange={(e) => setData('descricao', e.target.value)}
+                  className="mt-1 block w-full py-4 pr-4 text-2xl"
                   autoComplete="descricao"
-                  placeholder="Faça uma descrição do seu serviço ou estabelecimento"
-                  required
+                  placeholder={
+                    data.tipo === 'SEV'
+                      ? 'Faça uma descrição do seu serviço'
+                      : 'Faça uma descrição do seu estabelecimento'
+                  }
                 />
                 {errors.descricao && <div className="text-red-600 text-sm">{errors.descricao}</div>}
               </div>
             )}
 
             {/* Contato */}
-            <>
-              <h1 className="text-2xl text-gray-600">Contato</h1>
-              <div className="space-y-2">
-                <InputLabel htmlFor="telefone" value="Telefone" />
-                <div className="flex gap-3">
+            {data.tipo && (
+              <>
+                <h1 className="text-2xl text-gray-600">Contato</h1>
+                <div className="space-y-2">
+                  <InputLabel htmlFor="telefone" value="Telefone" />
                   <TextInput
                     id="telefone"
                     type="text"
                     name="telefone"
-                    value={data.telefone}
-                    onChange={e => setData('telefone', e.target.value)}
-                    className="flex-1"
-                    autoComplete="telefone"
-                    placeholder="Digite um telefone"
-                    required
+                    value={data.contato.telefone}
+                    onChange={(e) =>
+                      setData('contato', {
+                        ...data.contato,
+                        telefone: formatarTelefone(e.target.value),
+                      })
+                    }
+                    className="mt-1 block w-full py-4 pr-4 text-2xl"
+                    autoComplete="tel"
+                    placeholder="Digite o telefone"
                   />
+                  {errors['contato.telefone'] && (
+                    <div className="text-red-600 text-sm">{errors['contato.telefone']}</div>
+                  )}
                 </div>
-                {errors.telefone && <div className="text-red-600 text-sm">{errors.telefone}</div>}
-              </div>
-              <span className='text-red-400 text-sm'>Atenção ao telefone, ele será usado para contato</span>
-            </>
+              </>
+            )}
 
-            {/* Endereço - se tiver tipo */}
+            {/* Endereço */}
             {data.tipo && (
               <>
                 <h1 className="text-2xl text-gray-600">Endereço</h1>
-
-                <div className="space-y-2">
-                  <InputLabel htmlFor="cep" value="CEP" />
-                  <div className="flex gap-3">
-                    <TextInput
-                      id="cep"
-                      type="text"
-                      name="cep"
-                      value={data.cep}
-                      onChange={e => setData('cep', e.target.value)}
-                      className="flex-1"
-                      autoComplete="cep"
-                      placeholder="Digite o CEP"
-                      required
-                    />
-                    <button
-                      type="button"
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded flex items-center gap-2"
-                      onClick={() => {
-                        handleCep(data.cep);
-                      }}
-                    >
-                      <Search /> Pesquisar
-                    </button>
-                  </div>
-                  {errors.cep && <div className="text-red-600 text-sm">{errors.cep}</div>}
+                <div className="space-y-2 flex">
+                    <div className="w-full">
+                        <InputLabel htmlFor="cep" value="CEP" />
+                        <div className="flex gap-3">
+                            <TextInput
+                                id="cep"
+                                type="text"
+                                name="cep"
+                                value={data.endereco.cep}
+                                onChange={e => setData('endereco', { ...data.endereco, cep: formatarCep(e.target.value) })}
+                                className="flex-1 mt-1 block w-full py-4 text-2xl"
+                                placeholder="Digite o CEP"
+                            />
+                            <button
+                                type="button"
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded flex items-center gap-2 text-xl"
+                                onClick={() => handleCep(data.endereco.cep)}
+                            >
+                                <Search /> Pesquisar
+                            </button>
+                        </div>
+                        {errors.endereco?.cep && <div className="text-red-600 text-sm">{errors.endereco.cep}</div>}
+                    </div>
                 </div>
-
-                {[
-                  { id: 'uf', label: 'UF', placeholder: 'Digite a UF' },
-                  { id: 'cidade', label: 'Cidade', placeholder: 'Digite a cidade' },
-                  { id: 'bairro', label: 'Bairro', placeholder: 'Digite o bairro' },
-                  { id: 'logradouro', label: 'Logradouro', placeholder: 'Digite o logradouro' },
-                ].map(({ id, label, placeholder }) => (
-                  <div key={id} className="space-y-2">
-                    <InputLabel htmlFor={id} value={label} />
-                    <TextInput
-                      id={id}
-                      type="text"
-                      name={id}
-                      value={data[id]}
-                      onChange={e => setData(id, e.target.value)}
-                      className="mt-1 block w-full"
-                      autoComplete={id}
-                      placeholder={placeholder}
-                      required
-                      disabled
-                    />
-                    {errors[id] && <div className="text-red-600 text-sm">{errors[id]}</div>}
-                  </div>
+                {/* Restante dos campos de endereço */}
+                {['uf', 'cidade', 'bairro', 'logradouro', 'complemento', 'numero'].map((campo) => (
+                    <div key={campo} className="space-y-2">
+                        <InputLabel htmlFor={campo} value={campo.charAt(0).toUpperCase() + campo.slice(1)} />
+                        <TextInput
+                            id={campo}
+                            type="text"
+                            name={campo}
+                            value={data.endereco[campo]}
+                            onChange={e => setData('endereco', { ...data.endereco, [campo]: e.target.value })}
+                            className="flex-1 mt-1 block w-full py-4 text-2xl"
+                            placeholder={`Digite o ${campo}`}
+                            // required={campo !== 'complemento'}
+                            disabled={['uf', 'cidade', 'bairro', 'logradouro'].includes(campo)}
+                        />
+                        {errors.endereco?.[campo] && <div className="text-red-600 text-sm">{errors.endereco[campo]}</div>}
+                    </div>
                 ))}
-                <div className="space-y-2">
-                  <InputLabel htmlFor="complemento" value="Complemento" />
-                  <TextInput
-                    id="complemento"
-                    type="text"
-                    name="complemento"
-                    value={data.complemento}
-                    onChange={e => setData('complemento', e.target.value)}
-                    className="mt-1 block w-full"
-                    autoComplete="complemento"
-                    placeholder="Digite o complemento"
-                  />
-                  {errors.complemento && <div className="text-red-600 text-sm">{errors.complemento}</div>}
-                </div>
-
-                <div className="space-y-2">
-                  <InputLabel htmlFor="numero" value="Número" />
-                  <TextInput
-                    id="numero"
-                    type="text"
-                    name="numero"
-                    value={data.numero}
-                    onChange={e => setData('numero', e.target.value)}
-                    className="mt-1 block w-full"
-                    autoComplete="numero"
-                    placeholder="Digite o número"
-                    required
-                  />
-                  {errors.numero && <div className="text-red-600 text-sm">{errors.numero}</div>}
-                </div>
               </>
             )}
 
             {/* Acesso */}
             <h1 className="text-2xl text-gray-600">Acesso</h1>
+            <div className="space-y-2">
+              <InputLabel htmlFor="nome_completo" value="Nome completo" />
+              <TextInput
+                id="nome_completo"
+                type="text"
+                name="nome_completo"
+                value={data.nome_completo}
+                onChange={(e) => setData('nome_completo', e.target.value)}
+                className="mt-1 block w-full py-4 pr-4 text-2xl"
+                autoComplete="name"
+                placeholder="Digite seu nome completo"
+              />
+              {errors.nome_completo && (
+                <div className="text-red-600 text-sm">{errors.nome_completo}</div>
+              )}
+            </div>
 
             <div className="space-y-2">
-              <InputLabel htmlFor="email" value="E-mail" />
+              <InputLabel htmlFor="email_login" value="E-mail" />
               <TextInput
-                id="email"
+                id="email_login"
                 type="email"
-                name="email"
-                value={data.email}
-                onChange={e => setData('email', e.target.value)}
-                className="mt-1 block w-full"
+                name="email_login"
+                value={data.email_login}
+                onChange={(e) => setData('email_login', e.target.value)}
+                className="mt-1 block w-full py-4 pr-4 text-2xl"
                 autoComplete="email"
-                placeholder="Digite o e-mail"
-                required
+                placeholder="Digite seu e-mail"
               />
-              {errors.email && <div className="text-red-600 text-sm">{errors.email}</div>}
+              {errors.email_login && (
+                <div className="text-red-600 text-sm">{errors.email_login}</div>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -316,11 +341,10 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                 type="password"
                 name="senha"
                 value={data.senha}
-                onChange={e => setData('senha', e.target.value)}
-                className="mt-1 block w-full"
+                onChange={(e) => setData('senha', e.target.value)}
+                className="mt-1 block w-full py-4 pr-4 text-2xl"
                 autoComplete="new-password"
                 placeholder="Digite a senha"
-                required
               />
               {errors.senha && <div className="text-red-600 text-sm">{errors.senha}</div>}
             </div>
@@ -332,13 +356,14 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                 type="password"
                 name="confirmacao_senha"
                 value={data.confirmacao_senha}
-                onChange={e => setData('confirmacao_senha', e.target.value)}
-                className="mt-1 block w-full"
+                onChange={(e) => setData('confirmacao_senha', e.target.value)}
+                className="mt-1 block w-full py-4 pr-4 text-2xl"
                 autoComplete="new-password"
                 placeholder="Confirme a senha"
-                required
               />
-              {errors.confirmacao_senha && <div className="text-red-600 text-sm">{errors.confirmacao_senha}</div>}
+              {errors.confirmacao_senha && (
+                <div className="text-red-600 text-sm">{errors.confirmacao_senha}</div>
+              )}
             </div>
 
             <button
@@ -359,6 +384,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
             </div>
           </form>
         </div>
+        
 
         <div className="text-center mt-4 text-gray-500 text-sm">
           <span>

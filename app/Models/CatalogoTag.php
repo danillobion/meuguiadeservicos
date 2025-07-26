@@ -15,7 +15,6 @@ class CatalogoTag extends Model
     protected $fillable = [
         'tag_id',
         'catalogo_id',
-        'nome',
     ];
 
     public function catalogo()

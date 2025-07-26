@@ -10,8 +10,8 @@ enum CatalogoTipo: string
     public function label(): string
     {
         return match($this) {
-            self::SERVICO => 'Serviço',
-            self::ESTABELECIMENTO => 'Estabelecimento'
+            self::SERVICO => 'Sou prestador de serviço',
+            self::ESTABELECIMENTO => 'Eu tenho um estabelecimento',
         };
     }
     

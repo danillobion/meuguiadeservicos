@@ -32,7 +32,7 @@ export default function Entrar({ tipos, tagServicos, tagEstabelecimentos }) {
   return (
     <MenuSuperior>
       <Head title="Entrar" />
-      <div className="mx-auto max-w-2xl sm:px-6 lg:px-8 pb-12">
+      <div className="pr-3 pl-3 mx-auto max-w-2xl sm:px-6 lg:px-8 pb-12">
         <CabecalhoPagina cabecalho={cabecalho} />
         <div className="overflow-hidden bg-white shadow-lg sm:rounded-xl p-6">
           <h2 className="text-2xl text-gray-600 mb-4">Informações</h2>

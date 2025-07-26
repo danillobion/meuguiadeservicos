@@ -66,3 +66,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+.my-masonry-grid {
+  display: flex;
+  margin-left: -1rem; /* gap entre colunas */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 1rem; /* gap entre colunas */
+  background-clip: padding-box;
+}
+
+.my-masonry-grid_column > div {
+  margin-bottom: 1rem; /* gap entre os cards */
+}

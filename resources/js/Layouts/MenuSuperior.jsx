@@ -9,8 +9,7 @@ import { Toaster } from "@/components/ui/sonner"
 export default function MenuSuperior({ header, children }) {
     const user = usePage().props.auth.user;
 
-    const [showingNavigationDropdown, setShowingNavigationDropdown] =
-        useState(false);
+    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
         <div className="min-h-screen bg-gray-100">
@@ -73,7 +72,7 @@ export default function MenuSuperior({ header, children }) {
                                                     type="button"
                                                     className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
                                                 >
-                                                    Olá, Fulano de tal
+                                                    Olá, {user.name}
 
                                                     <svg
                                                         className="-me-0.5 ms-2 h-4 w-4"
@@ -93,8 +92,15 @@ export default function MenuSuperior({ header, children }) {
                                     </Dropdown.Trigger>
                                         <Dropdown.Content>
                                             <Dropdown.Link
-                                                href={route('profile.edit')}
-                                            >
+                                                href={route('servico.index')}                                            >
+                                                Serviço
+                                            </Dropdown.Link>
+                                            <Dropdown.Link     
+                                                href={route('estabelecimento.index')}                                            >
+                                                Estabelecimentos
+                                            </Dropdown.Link>
+                                            <Dropdown.Link
+                                                href={route('meus-dados.index')}                                            >
                                                 Meus dados
                                             </Dropdown.Link>
                                             <Dropdown.Link
@@ -185,15 +191,24 @@ export default function MenuSuperior({ header, children }) {
                                 </div>
 
                                 <div className="mt-3 space-y-1">
-                                    <ResponsiveNavLink href={route('profile.edit')}>
-                                        Profile
+                                    <ResponsiveNavLink
+                                        href={route('servico.index')}>
+                                        Serviço
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink>
+                                        href={route('estabelecimento.index')}
+                                        Estabelecimentos
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink
+                                        href={route('meus-dados.index')}>
+                                        Meus dados
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
                                         method="post"
                                         href={route('logout')}
                                         as="button"
                                     >
-                                        Log Out
+                                        Sair
                                     </ResponsiveNavLink>
                                 </div>
                             </div>
