@@ -1,10 +1,14 @@
 import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
 import MenuSuperior from '@/Layouts/MenuSuperior';
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Link } from '@inertiajs/react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 export default function Page({ estabelecimentos }) 
 {
+    const { flash } = usePage().props;
+    
     const cabecalho = {
         titulo: "Estabelecimentos",
         migalhas: [
@@ -12,6 +16,15 @@ export default function Page({ estabelecimentos })
             { href: "/estabelecimentos", label: "Estabelecimentos" },
         ],
     };
+
+    useEffect(() => {
+        if (flash?.success) {
+        toast.success(flash.success);
+        }
+        if (flash?.error) {
+        toast.error(flash.error);
+        }
+    }, [flash]);
 
     return (
         <MenuSuperior>

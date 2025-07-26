@@ -5,12 +5,15 @@ import { Search,MapPin } from 'lucide-react';
 import { useState,useEffect } from 'react';
 import SelectInput from '@/Components/SelectInput';
 import Masonry from 'react-masonry-css';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link,usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
+import { toast } from 'sonner';
 
 
 export default function Apresentacao() 
 {
+  const { flash } = usePage().props;
+  
   const [listaCidades, setListaCidades] = useState([]);
   const [listaServicos, setListaServicos] = useState([]);
   const [listaTags, setListaTags] = useState([]);
@@ -26,7 +29,6 @@ export default function Apresentacao()
     640: 1,
   };
 
-  
   const cabecalho = {
     titulo: "Serviço e/ou Estabelecimento",
     migalhas: [
@@ -74,6 +76,15 @@ export default function Apresentacao()
   useEffect(() => {
     buscar();
   }, []);
+
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success);
+    }
+    if (flash?.error) {
+      toast.error(flash.error);
+    }
+  }, [flash]);
 
   return (
     <MenuSuperior>

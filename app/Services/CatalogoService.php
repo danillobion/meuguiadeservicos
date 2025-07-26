@@ -14,86 +14,20 @@ use Illuminate\Support\Facades\Hash;
 
 class CatalogoService
 {
-    // public function store(Request $request)
-    // {
-    //     dd("opa");
-    //     DB::beginTransaction();
-
-    //     try {
-    //         // endereco
-    //         $endereco = new Endereco();
-    //         $endereco->cep = $request->cep;
-    //         $endereco->logradouro = $request->logradouro;
-    //         $endereco->bairro = $request->bairro;
-    //         $endereco->cidade = $request->cidade;
-    //         $endereco->uf = $request->uf;
-    //         $endereco->complemento = $request->complemento;
-    //         $endereco->numero = $request->numero;
-    //         $endereco->save();
-
-    //         // user
-    //         $user = new User();
-    //         $user->name = $request->name;
-    //         $user->email = $request->email;
-    //         $user->telefone = $request->telefone;
-    //         $user->password = Hash::make($request->senha);
-    //         $user->save();
-
-    //         // contato
-    //         $contato = new Contato();
-    //         $contato->telefone = $request->contato_telefone;
-    //         $contato->email = $request->contato_email;
-    //         $contato->save();
-
-    //         // catalogo
-    //         $catalogo = new Catalogo();
-    //         $catalogo->user_id = $user->id;
-    //         $catalogo->endereco_id = $endereco->id;
-    //         $catalogo->contato_id = $contato->id;
-    //         $catalogo->descricao = $request->descricao;
-    //         $catalogo->nome = $request->nome;
-
-    //         if($request->tipo == CatalogoTipo::ESTABELECIMENTO->value){
-    //             $catalogo->tipo = CatalogoTipo::ESTABELECIMENTO->value;
-    //         } elseif ($request->tipo == CatalogoTipo::SERVICO->value) {
-    //             $catalogo->tipo = CatalogoTipo::SERVICO->value;
-    //         }
-    //         $catalogo->save();
-
-    //         // habilidades
-    //         if(!empty($request->habilidades)){
-    //             foreach($request->habilidades as $habilidade){
-    //                 $catalogoTag = new CatalogoTag();
-    //                 $catalogoTag->catalogo_id = $catalogo->id;
-    //                 $catalogoTag->tag_id = $habilidade['value'];
-    //                 $catalogoTag->save();
-    //             }
-    //         }
-
-    //         DB::commit();
-    //         return $catalogo;
-
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-    //         throw $e;
-    //     }
-    // }
 
     public function find($id = null, $tipo = null)
     {
         $user_id = auth()->user()->id;
-        $catalogo = Catalogo::with("endereco", "tags", "contato")
-            ->where('user_id', $user_id);
 
-        if (!is_null($tipo)) {
-            $catalogo = $catalogo->where('tipo', $tipo);
+        //novo catalogo
+        if(is_null($id)){
+            $catalogo = new Catalogo();
+            $catalogo['tipo'] = $tipo;
+        }else{
+            $catalogo = Catalogo::with("endereco", "tags", "contato")->where('user_id', $user_id)->find($id);
         }
 
-        if (is_null($id)) {
-            return $catalogo->first();
-        } else {
-            return $catalogo->find($id);
-        }
+        return $catalogo;
     }
 
     public function findAll($tipo = null)

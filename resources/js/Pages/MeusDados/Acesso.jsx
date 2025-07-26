@@ -1,13 +1,17 @@
+import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import SelectInput from '@/Components/SelectInput';
 import TextInput from '@/Components/TextInput';
 import AbasPagina from '@/Components/ui/AbasPagina';
 import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
 import MenuSuperior from '@/Layouts/MenuSuperior';
-import { Head, useForm, Link } from '@inertiajs/react';
+import { Head, useForm, Link, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
-export default function Acesso({user}) {
+export default function Acesso({user}) 
+{
+    const { flash } = usePage().props;
     
     const cabecalho = {
         titulo: "Meus dados: Acesso",
@@ -27,11 +31,19 @@ export default function Acesso({user}) {
         senhaAtual: '',
         novaSenha: '',
         confirmacaoNovaSenha: '',
+        tipo: 'acesso'
     });
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        post(route('catalogo.store'));
+        if (e?.preventDefault) e.preventDefault();
+        post(route('meus-dados.store'), {
+            onSuccess: () => {
+                // Nada a fazer aqui — o backend já está redirecionando
+            },
+            onError: () => {
+                toast.error("Erro ao cadastrar.");
+            }
+        });
     };
 
     useEffect(() => {
@@ -39,6 +51,16 @@ export default function Acesso({user}) {
             setData('email', user.email);
         }
     }, [user]);
+
+
+    useEffect(() => {
+        if (flash?.success) {
+        toast.success(flash.success);
+        }
+        if (flash?.error) {
+        toast.error(flash.error);
+        }
+    }, [flash]);
 
     return (
         <MenuSuperior>
@@ -69,7 +91,7 @@ export default function Acesso({user}) {
                                 placeholder="Digite o e-mail"
                                 disabled 
                             />
-                            {errors.email && <div className="text-red-600 text-sm">{errors.email}</div>}
+                            <InputError message={errors[`email`]} className="mt-2" />
                             </div>
 
 
@@ -84,9 +106,9 @@ export default function Acesso({user}) {
                                     className="mt-1 block w-full mt-1 block w-full py-4 pr-4 text-2xl"
                                     autoComplete="new-password"
                                     placeholder="Digite a senha atual"
-                                    required
+                                    
                                 />
-                                {errors.senhaAtual && <div className="text-red-600 text-sm">{errors.senhaAtual}</div>}
+                                <InputError message={errors[`senhaAtual`]} className="mt-2" />
                             </div>
 
                             <div className="space-y-2">
@@ -100,9 +122,9 @@ export default function Acesso({user}) {
                                     className="mt-1 block w-full mt-1 block w-full py-4 pr-4 text-2xl"
                                     autoComplete="new-password"
                                     placeholder="Digite a nova senha"
-                                    required
+                                    
                                 />
-                                {errors.novaSenha && <div className="text-red-600 text-sm">{errors.novaSenha}</div>}
+                                <InputError message={errors[`novaSenha`]} className="mt-2" />
                             </div>
 
                             <div className="space-y-2">
@@ -116,9 +138,9 @@ export default function Acesso({user}) {
                                     className="mt-1 block w-full mt-1 block w-full py-4 pr-4 text-2xl"
                                     autoComplete="new-password"
                                     placeholder="Confirme a nova senha"
-                                    required
+                                
                                 />
-                                {errors.confirmacaoNovaSenha && <div className="text-red-600 text-sm">{errors.confirmacaoNovaSenha}</div>}
+                                <InputError message={errors[`confirmacaoNovaSenha`]} className="mt-2" />
                             </div>
 
                             <button

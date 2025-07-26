@@ -54,7 +54,7 @@ class CatalogoController extends Controller
     {
         validator($request->all(), [
             'id' => 'nullable',
-            'nome' => 'nullable',
+            'nome' => 'required',
             'descricao' => 'required',
             'tipo' => 'required',
 
@@ -77,7 +77,12 @@ class CatalogoController extends Controller
             'contato.instagram' => 'nullable',
             
             'habilidades' => 'required|array',
-            'novo_usuario' => 'nullable',
+            'novo_usuario' => 'nullable', //flag
+
+            'nome_completo' => 'required_if:novo_usuario,1|min:3',
+            'email_login' => 'required_if:novo_usuario,1|email',
+            'senha' => 'required_if:novo_usuario,1|min:8',
+            'confirmacao_senha' => 'required_if:novo_usuario,1|same:senha',
         ])->validate();
 
         $catalogoService = new CatalogoService();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class UsuarioController extends Controller
@@ -38,29 +39,37 @@ class UsuarioController extends Controller
             $usuarioService = new UserService();
             $usuarioService->store($request);
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Dados atualizados com sucesso!'
-            ]);
+            $mensagem = 'Dados atualizados com sucesso!';
+            return redirect()->route('meus-dados.index')->with('success', $mensagem);
         }
 
         // acesso
         if($request->tipo == "acesso")
         {
-            validator($request->all(), [
+            // Validação dos dados
+            $request->validate([
                 'email' => 'required|email',
-                'senha' => 'required',
-                'confirmacao_senha' => 'required|same:senha',
-            ])->validate();
-
-            $usuarioService = new UserService();
-            $usuarioService->store($request);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Dados atualizados com sucesso!'
+                'senhaAtual' => 'required|min:8',
+                'novaSenha' => 'required|min:8',
+                'confirmacaoNovaSenha' => 'required|same:novaSenha',
             ]);
-        }   
+
+            // Verificar se a senha atual está correta
+            $user = auth()->user();
+            if (!Hash::check($request->senhaAtual, $user->password)) {
+                return back()->withErrors(['senhaAtual' => 'A senha atual está incorreta.']);
+            }
+
+            // Atualizar os dados do usuário
+            $user->email = $request->email;
+            $user->password = Hash::make($request->novaSenha);
+            $user->save();
+
+            // Redirecionar com mensagem de sucesso
+            return redirect()
+            ->route('meus-dados.acesso.index')
+            ->with('success', 'Dados atualizados com sucesso!');
+            }   
 
     }
 }

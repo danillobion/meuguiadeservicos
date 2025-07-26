@@ -3,13 +3,28 @@ import TextInput from '@/Components/TextInput';
 import AbasPagina from '@/Components/ui/AbasPagina';
 import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
 import MenuSuperior from '@/Layouts/MenuSuperior';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { useEffect } from 'react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import { formatarTelefone } from '@/utils/formatarTelefone';
 import { toast } from "sonner"
+import InputError from '@/Components/InputError';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function MeusDados({user}) 
 {
+    const { flash } = usePage().props;
+    const [openConfirm, setOpenConfirm] = useState(false);
+    
     const cabecalho = {
         titulo: "Meus dados",
         migalhas: [
@@ -22,11 +37,11 @@ export default function MeusDados({user})
         { href: "/meus-dados/acesso", label: "Acesso" },
     ]
 
-    const { data, setData, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         id: '',
         nome: '',
         telefone: '',
-        tipo: '',
+        tipo: 'meusDados',
     });
     
     useEffect(() => {
@@ -40,14 +55,24 @@ export default function MeusDados({user})
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post(route('meus-dados.store'), data);
-            toast.success(response.data.message);
-        } catch (error) {
-            console.error(error);
-            toast.error(error.response.data.message);
-        }
+        if (e?.preventDefault) e.preventDefault();
+        post(route('meus-dados.store'), {
+            onSuccess: () => {
+                // Nada a fazer aqui — o backend já está redirecionando
+            },
+            onError: () => {
+                toast.error("Erro ao cadastrar.");
+            }
+        });
     };
+    useEffect(() => {
+        if (flash?.success) {
+        toast.success(flash.success);
+        }
+        if (flash?.error) {
+        toast.error(flash.error);
+        }
+    }, [flash]);
 
     return (
         <MenuSuperior>
@@ -77,7 +102,7 @@ export default function MeusDados({user})
                                 placeholder="Digite seu nome e sobrenome"
                                 required
                             />
-                                {errors.nome && <div className="text-red-600 text-sm">{errors.nome}</div>}
+                                <InputError message={errors[`nome`]} className="mt-2" />
                             </div>
 
                             <h1 className="text-2xl text-gray-600">Contato</h1>
@@ -94,16 +119,38 @@ export default function MeusDados({user})
                                 autoComplete="telefone"
                                 placeholder="Digite o número de telefone"
                             />
-                            {errors.telefone && <div className="text-red-600 text-sm">{errors.telefone}</div>}
+                            <InputError message={errors[`telefone`]} className="mt-2" />
                             </div>
 
-                            <button
-                            type="submit"
-                              disabled={processing}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-4 rounded w-full text-center text-lg shadow"
-                            >
-                                {processing ? 'Processando...' : 'Salvar'}
-                            </button>
+                            <AlertDialog open={openConfirm} onOpenChange={setOpenConfirm}>
+                                <AlertDialogTrigger
+                                    type="button"
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-4 rounded w-full text-lg shadow"
+                                >
+                                    {processing ? 'Processando...' : 'Salvar'}
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Deseja salvar?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Essa ação poderá ser alterada posteriormente caso seja necessário.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            type="button"
+                                            disabled={processing}
+                                            onClick={() => {
+                                                setOpenConfirm(false);
+                                                handleSubmit(new Event('submit'));
+                                            }}
+                                        >
+                                            {processing ? 'Processando...' : 'Sim, quero salvar!'}
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
 
                             <div className="mt-4">
                             <Link

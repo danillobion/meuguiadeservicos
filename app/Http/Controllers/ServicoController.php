@@ -32,7 +32,7 @@ class ServicoController extends Controller
     {
         validator($request->all(), [
             'id' => 'nullable',
-            'nome' => 'nullable',
+            'nome' => 'required',
             'descricao' => 'required',
             'tipo' => 'required',
 
@@ -58,11 +58,14 @@ class ServicoController extends Controller
         ])->validate();
 
         $catalogoService = new CatalogoService();
-        $resultado = $catalogoService->store($request);
+        $catalogoService->store($request);
 
-        return response()->json([
-            'status' => $resultado,
-            'message' => $resultado ? 'Cadastro realizado com sucesso!' : 'Erro ao realizar cadastro!'
-        ]);
+        $mensagem = $request['tipo'] == CatalogoTipo::SERVICO->value ? 'Servico cadastrado com sucesso!' : 'Estabelecimento cadastrado com sucesso!';
+
+        if($request['tipo'] == CatalogoTipo::ESTABELECIMENTO->value){
+            return redirect()->route('estabelecimento.index')->with('success', $mensagem);
+        }
+
+        return redirect()->route('apresentacao.index')->with('success', $mensagem);  ;
     }
 }

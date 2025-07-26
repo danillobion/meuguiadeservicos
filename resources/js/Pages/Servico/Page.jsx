@@ -7,7 +7,7 @@ import ServicoOuEstabelecimentoForm from '@/Components/form/ServicoOuEstabelecim
 export default function Page({ catalogo, tagServicos }) 
 {
     let cabecalho = {};
-    if(catalogo.tipo == "EST"){
+    if(catalogo?.tipo == "EST"){
         cabecalho = {
             titulo: "Estabelecimento",
             migalhas: [

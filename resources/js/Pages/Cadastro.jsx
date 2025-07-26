@@ -91,8 +91,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("opa: ", e);
-
+    
     post(route('catalogo.store'), {
       onSuccess: () => {
         // Nada a fazer aqui — o backend já está redirecionando
@@ -172,14 +171,14 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                 <span className='text-gray-500 text-sm'>
                   {data.tipo === 'SEV' ? 'Exemplo: Pintor de Parede, Serviços de Limpeza, etc' : ''}
                 </span>
-                {errors.nome && <div className="text-red-600 text-sm">{errors.nome}</div>}
+                <InputError message={errors.nome} className="mt-2" />
               </div>
             )}
 
             {/* Habilidades */}
             {data.tipo && (
               <div className="space-y-2">
-                <InputLabel htmlFor="habilidades" value={data.tipo === 'SEV' ? 'Habilidades do seu serviço' : 'Categorias do seu estabelecimento'} />
+                <InputLabel htmlFor="habilidades" value={data.tipo === 'SEV' ? 'Habilidades do seu serviço' : 'Habilidades do seu estabelecimento'} />
                 <Select
                   ref={selectRef}
                   options={tagHabilidades}
@@ -196,7 +195,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                 <span className='text-gray-500 text-sm'>
                   {data.tipo === 'SEV' ? 'Exemplo: Pintor, Encanador, etc' : 'Exemplo: Restaurante, Bar, Hotel, etc'}
                 </span>
-                {errors.habilidades && <div className="text-red-600 text-sm">{errors.habilidades}</div>}
+                <InputError message={errors.habilidades} className="mt-2" />
               </div>
             )}
 
@@ -217,7 +216,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                       : 'Faça uma descrição do seu estabelecimento'
                   }
                 />
-                {errors.descricao && <div className="text-red-600 text-sm">{errors.descricao}</div>}
+                <InputError message={errors.descricao} className="mt-2" />
               </div>
             )}
 
@@ -231,7 +230,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                     id="telefone"
                     type="text"
                     name="telefone"
-                    value={data.contato.telefone}
+                    value={data.contato?.telefone || ''}
                     onChange={(e) =>
                       setData('contato', {
                         ...data.contato,
@@ -242,9 +241,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                     autoComplete="tel"
                     placeholder="Digite o telefone"
                   />
-                  {errors['contato.telefone'] && (
-                    <div className="text-red-600 text-sm">{errors['contato.telefone']}</div>
-                  )}
+                  <InputError message={errors['contato.telefone']} className="mt-2" />
                 </div>
               </>
             )}
@@ -274,7 +271,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                                 <Search /> Pesquisar
                             </button>
                         </div>
-                        {errors.endereco?.cep && <div className="text-red-600 text-sm">{errors.endereco.cep}</div>}
+                        <InputError message={errors['endereco.cep']} className="mt-2" />
                     </div>
                 </div>
                 {/* Restante dos campos de endereço */}
@@ -292,7 +289,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                             // required={campo !== 'complemento'}
                             disabled={['uf', 'cidade', 'bairro', 'logradouro'].includes(campo)}
                         />
-                        {errors.endereco?.[campo] && <div className="text-red-600 text-sm">{errors.endereco[campo]}</div>}
+                        <InputError message={errors[`endereco.${campo}`]} className="mt-2" />
                     </div>
                 ))}
               </>
@@ -312,9 +309,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                 autoComplete="name"
                 placeholder="Digite seu nome completo"
               />
-              {errors.nome_completo && (
-                <div className="text-red-600 text-sm">{errors.nome_completo}</div>
-              )}
+              <InputError message={errors.nome_completo} className="mt-2" />
             </div>
 
             <div className="space-y-2">
@@ -329,9 +324,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                 autoComplete="email"
                 placeholder="Digite seu e-mail"
               />
-              {errors.email_login && (
-                <div className="text-red-600 text-sm">{errors.email_login}</div>
-              )}
+              <InputError message={errors.email_login} className="mt-2" />
             </div>
 
             <div className="space-y-2">
@@ -346,7 +339,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                 autoComplete="new-password"
                 placeholder="Digite a senha"
               />
-              {errors.senha && <div className="text-red-600 text-sm">{errors.senha}</div>}
+              <InputError message={errors.senha} className="mt-2" />
             </div>
 
             <div className="space-y-2">
@@ -361,9 +354,7 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
                 autoComplete="new-password"
                 placeholder="Confirme a senha"
               />
-              {errors.confirmacao_senha && (
-                <div className="text-red-600 text-sm">{errors.confirmacao_senha}</div>
-              )}
+              <InputError message={errors.confirmacao_senha} className="mt-2" />
             </div>
 
             <button

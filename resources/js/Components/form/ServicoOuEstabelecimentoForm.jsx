@@ -1,5 +1,5 @@
 import { formatarCep } from "@/utils/formatarCEP";
-import { useForm,Link } from "@inertiajs/react";
+import { useForm,Link, usePage } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import InputLabel from "../InputLabel";
 import TextInput from "../TextInput";
@@ -20,8 +20,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import InputError from "../InputError";
 
 export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
+    const { flash } = usePage().props;
     const { data, setData, post, processing, errors } = useForm({
             id: catalogo?.id || '',
             nome: catalogo?.nome || '',
@@ -55,34 +57,43 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
     
         const handleSubmit = async (e) => {
             if (e?.preventDefault) e.preventDefault();
-
-            try {
-                const response = await axios.post(route('servico.store'), data);
-                toast.success(response.data.message);
-            } catch (error) {
-                console.error(error);
-                toast.error(error.response?.data?.message || 'Erro ao salvar');
-            }
+                post(route('servico.store'), {
+                    onSuccess: () => {
+                        // Nada a fazer aqui — o backend já está redirecionando
+                    },
+                    onError: () => {
+                        toast.error("Erro ao cadastrar.");
+                    }
+                });
         };
     
-        const handleCep = async (cep) => {
-            try {
-                const response = await fetch(`https://viacep.com.br/ws/${cep.replace(/\D/g, '')}/json/`);
-                if (!response.ok) throw new Error('Erro ao buscar CEP');
-                const endereco = await response.json();
-                if (endereco.erro) throw new Error('CEP não encontrado');
-                setData('endereco', {
-                    ...data.endereco,
-                    cep: endereco.cep,
-                    uf: endereco.uf,
-                    cidade: endereco.localidade,
-                    bairro: endereco.bairro,
-                    logradouro: endereco.logradouro,
-                });
-            } catch (error) {
-                alert(error.message);
-            }
-        };
+    const handleCep = async (cep) => {
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep.replace(/\D/g, '')}/json/`);
+            if (!response.ok) throw new Error('Erro ao buscar CEP');
+            const endereco = await response.json();
+            if (endereco.erro) throw new Error('CEP não encontrado');
+            setData('endereco', {
+                ...data.endereco,
+                cep: endereco.cep,
+                uf: endereco.uf,
+                cidade: endereco.localidade,
+                bairro: endereco.bairro,
+                logradouro: endereco.logradouro,
+            });
+        } catch (error) {
+            alert(error.message);
+        }
+    };
+
+    useEffect(() => {
+        if (flash?.success) {
+        toast.success(flash.success);
+        }
+        if (flash?.error) {
+        toast.error(flash.error);
+        }
+    }, [flash]);
 
     return (
         <>
@@ -99,9 +110,8 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                         onChange={e => setData('nome', e.target.value)}
                         className="mt-1 block w-full py-4 text-2xl"
                         placeholder="Digite seu nome"
-                        required
                     />
-                    {errors.nome && <div className="text-red-600 text-sm">{errors.nome}</div>}
+                    <InputError message={errors[`nome`]} className="mt-2" />
                 </div>
 
                 {/* Descrição */}
@@ -114,9 +124,8 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                         onChange={e => setData('descricao', e.target.value)}
                         className="mt-1 block w-full py-4 text-2xl"
                         placeholder="Descreva seu serviço"
-                        required
                     />
-                    {errors.descricao && <div className="text-red-600 text-sm">{errors.descricao}</div>}
+                    <InputError message={errors.descricao} className="mt-2" />
                 </div>
 
                 {/* Habilidades */}
@@ -129,9 +138,8 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                         onChange={(e) => setData('habilidades', e)}
                         placeholder="Selecione habilidades"
                         className='mt-1 block w-full text-xl'
-                        required
                     />
-                    {errors.habilidades && <div className="text-red-600 text-sm">{errors.habilidades}</div>}
+                    <InputError message={errors.habilidades} className="mt-2" />
                 </div>
 
                 {/* Contato */}
@@ -148,7 +156,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                         autoComplete="telefone"
                         placeholder="Digite o número de telefone"
                     />
-                    {errors.telefone && <div className="text-red-600 text-sm">{errors.telefone}</div>}
+                    <InputError message={errors['contato.telefone']} className="mt-2" />
                 </div>
                 <div className="space-y-2">
                     <InputLabel htmlFor="email" value="E-mail" />
@@ -162,7 +170,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                         autoComplete="email"
                         placeholder="Digite o e-mail"
                     />
-                    {errors.email && <div className="text-red-600 text-sm">{errors.email}</div>}
+                    <InputError message={errors['contato.email']} className="mt-2" />
                 </div>
                 <div className="space-y-2">
                     <InputLabel htmlFor="site" value="Site" />
@@ -176,7 +184,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                         autoComplete="site"
                         placeholder="Digite o link do site"
                     />
-                    {errors.site && <div className="text-red-600 text-sm">{errors.site}</div>}
+                    <InputError message={errors['contato.site']} className="mt-2" />
                 </div>
 
                 {/* Endereço */}
@@ -193,7 +201,6 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                                 onChange={e => setData('endereco', { ...data.endereco, cep: formatarCep(e.target.value) })}
                                 className="flex-1 mt-1 block w-full py-4 text-2xl"
                                 placeholder="Digite o CEP"
-                                required
                             />
                             <button
                                 type="button"
@@ -203,7 +210,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                                 <Search /> Pesquisar
                             </button>
                         </div>
-                        {errors.endereco?.cep && <div className="text-red-600 text-sm">{errors.endereco.cep}</div>}
+                        <InputError message={errors['endereco.cep']} className="mt-2" />
                     </div>
                 </div>
 
@@ -219,10 +226,12 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                             onChange={e => setData('endereco', { ...data.endereco, [campo]: e.target.value })}
                             className="flex-1 mt-1 block w-full py-4 text-2xl"
                             placeholder={`Digite o ${campo}`}
-                            required={campo !== 'complemento'}
                             disabled={['uf', 'cidade', 'bairro', 'logradouro'].includes(campo)}
                         />
-                        {errors.endereco?.[campo] && <div className="text-red-600 text-sm">{errors.endereco[campo]}</div>}
+                        <InputError
+                            message={errors[`endereco.${campo}`]?.replace('endereco.', '')}
+                            className="mt-2"
+                        />                    
                     </div>
                 ))}
 
