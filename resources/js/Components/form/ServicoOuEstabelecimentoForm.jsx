@@ -22,14 +22,14 @@ import {
 } from "@/components/ui/alert-dialog"
 import InputError from "../InputError";
 
-export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
+export default function ServicoOuEstabelecimentoForm({ catalogo, tags, tipo }) {
     const { flash } = usePage().props;
     const { data, setData, post, processing, errors } = useForm({
             id: catalogo?.id || '',
             nome: catalogo?.nome || '',
             descricao: catalogo?.descricao || '',
             habilidades: catalogo?.tags?.map(tag => ({ value: tag.id, label: tag.nome })) || [],
-            tipo: catalogo?.tipo || '',
+            tipo: catalogo?.tipo || tipo,
             endereco: {
                 id: catalogo?.endereco?.id || '',
                 cep: formatarCep(catalogo?.endereco?.cep) || '',
@@ -51,13 +51,13 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                 instagram: catalogo?.contato?.instagram || ''
             }
         });
-        const tagsFormatada = tags?.map(tag => ({ value: tag.id, label: tag.nome })) || [];
+        const tagsFormatada = tags;
         const [tagHabilidades, setTagHabilidades] = useState(tagsFormatada);
         const [openConfirm, setOpenConfirm] = useState(false);
     
         const handleSubmit = async (e) => {
             if (e?.preventDefault) e.preventDefault();
-                post(route('servico.store'), {
+                post(route('catalogo.salvar'), {
                     onSuccess: () => {
                         // Nada a fazer aqui — o backend já está redirecionando
                     },
@@ -68,8 +68,16 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
         };
     
     const handleCep = async (cep) => {
+        cep = cep.replace(/\D/g, '');
+        if(cep.length < 8){
+            toast.error('CEP inválido');
+            return
+        }
         try {
             const response = await fetch(`https://viacep.com.br/ws/${cep.replace(/\D/g, '')}/json/`);
+            if(response.ok) {
+                toast.success('CEP encontrado com sucesso.');
+            }
             if (!response.ok) throw new Error('Erro ao buscar CEP');
             const endereco = await response.json();
             if (endereco.erro) throw new Error('CEP não encontrado');
@@ -82,7 +90,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                 logradouro: endereco.logradouro,
             });
         } catch (error) {
-            alert(error.message);
+            toast.error(error.message);
         }
     };
 
@@ -101,7 +109,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                 <h1 className="text-2xl text-gray-600">Informações</h1>
                 {/* Nome */}
                 <div className="space-y-2">
-                    <InputLabel htmlFor="nome" value={data.tipo === "SEV" ? "Nome e sobrenome" : "Nome do estabelecimento"} />
+                    <InputLabel htmlFor="nome" value={data.tipo === "SER" ? "Nome para o serviço" : "Nome do estabelecimento"} />
                     <TextInput
                         id="nome"
                         type="text"
@@ -109,7 +117,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                         value={data.nome}
                         onChange={e => setData('nome', e.target.value)}
                         className="mt-1 block w-full py-4 text-2xl"
-                        placeholder="Digite seu nome"
+                        placeholder={data.tipo === "SER" ? "Nome para o serviço" : "Nome do estabelecimento"}
                     />
                     <InputError message={errors[`nome`]} className="mt-2" />
                 </div>
@@ -136,7 +144,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                         isMulti
                         value={data.habilidades}
                         onChange={(e) => setData('habilidades', e)}
-                        placeholder="Selecione habilidades"
+                        placeholder="Selecione as habilidades"
                         className='mt-1 block w-full text-xl'
                     />
                     <InputError message={errors.habilidades} className="mt-2" />
@@ -235,43 +243,42 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags }) {
                     </div>
                 ))}
 
-                {/* Botões */}
-                <AlertDialog open={openConfirm} onOpenChange={setOpenConfirm}>
-                    <AlertDialogTrigger
-                        type="button"
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-4 rounded w-full text-lg shadow"
+                <div className='flex justify-end space-x-2 pt-5'>
+                    <Link
+                        href={data.tipo === "SER" ? route('servico.listar') : route('estabelecimento.listar')}
+                        className="inline-flex items-center px-8 py-4 text-md font-medium text-center text-black bg-gray-200 rounded-lg hover:bg-gray-300"
                     >
-                        Salvar
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Deseja salvar?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                Essa ação poderá ser alterada posteriormente caso seja necessário.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction
-                                type="button"
-                                onClick={() => {
-                                    setOpenConfirm(false);
-                                    handleSubmit(new Event('submit'));
-                                }}
-                            >
-                                Sim, quero salvar!
-                            </AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-
-                <Link
-                    href={data.tipo === "SEV" ? route('apresentacao.index') : route('estabelecimento.index')}
-                    className="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold px-4 py-4 rounded text-lg mt-4"
-                >
-                    Cancelar
-                </Link>
-                
+                        Cancelar
+                    </Link>
+                    <AlertDialog open={openConfirm} onOpenChange={setOpenConfirm}>
+                        <AlertDialogTrigger
+                            type="button"
+                            className="shadow-md inline-flex items-center px-8 py-4 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+                        >
+                            Salvar
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Deseja salvar?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Essa ação poderá ser alterada posteriormente caso seja necessário.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                <AlertDialogAction
+                                    type="button"
+                                    onClick={() => {
+                                        setOpenConfirm(false);
+                                        handleSubmit(new Event('submit'));
+                                    }}
+                                >
+                                    Sim, quero salvar!
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>              
             </form>
         </>
     );

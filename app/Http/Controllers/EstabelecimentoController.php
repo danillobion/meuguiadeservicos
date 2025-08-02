@@ -25,8 +25,8 @@ class EstabelecimentoController extends Controller
     public function editarIndex($id)
     {
         $tipo = CatalogoTipo::ESTABELECIMENTO->value;
-        $service = new CatalogoService();
-        $catalogo = $service->find($id, null);
+        $catalogoService = new CatalogoService();
+        $catalogo = $catalogoService->find($id, null);
 
         if(is_null($catalogo)){
             $catalogo = new Catalogo();

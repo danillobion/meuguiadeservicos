@@ -20,7 +20,7 @@ class ServicoController extends Controller
         $service = new CatalogoService();
         $catalogo = $service->find(null,CatalogoTipo::SERVICO->value);
         
-        $tagServicos = Tag::select('id', 'nome')->where("tipo", "SRV")->get();
+        $tagServicos = Tag::select('id', 'nome')->where("tipo", "SER")->get();
 
         return Inertia::render('Servico/Page',[
             'catalogo' => $catalogo,

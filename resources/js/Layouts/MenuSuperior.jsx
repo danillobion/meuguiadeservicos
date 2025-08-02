@@ -1,7 +1,7 @@
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
+import ApplicationLogo from '@/components/ApplicationLogo';
+import Dropdown from '@/components/Dropdown';
+import NavLink from '@/components/NavLink';
+import ResponsiveNavLink from '@/components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { Toaster } from "@/components/ui/sonner"
@@ -33,12 +33,12 @@ export default function MenuSuperior({ header, children }) {
                                                 
                                                 <div className="hidden space-x-3 sm:-my-px sm:ms-10 sm:flex">
 
-                                                    <NavLink
+                                                    {/* <NavLink
                                                         href={route('como-divulgar')}
                                                         active={route().current('como-divulgar')}
                                                     >
                                                         Como divulgar?
-                                                    </NavLink>
+                                                    </NavLink> */}
 
                                                     <NavLink
                                                         href={route('catalogo.index')}
@@ -57,12 +57,12 @@ export default function MenuSuperior({ header, children }) {
                                             ) : (
                                                 <div className="hidden space-x-3 sm:-my-px sm:ms-10 sm:flex">
 
-                                                    <NavLink
+                                                    {/* <NavLink
                                                         href={route('resumo.index')}
                                                         active={route().current('resumo.index')}
                                                     >
                                                         Resumo
-                                                    </NavLink>
+                                                    </NavLink> */}
                                                 </div>
                                             )}
                                             {user === null ? (
@@ -91,13 +91,29 @@ export default function MenuSuperior({ header, children }) {
                                         </span>
                                     </Dropdown.Trigger>
                                         <Dropdown.Content>
-                                            <Dropdown.Link
-                                                href={route('servico.index')}                                            >
-                                                Serviço
+
+                                            {user?.root == true && (
+                                                <>
+                                                <Dropdown.Link href={route('admin.dashboard.index')}>
+                                                    Dashboard
+                                                </Dropdown.Link>
+                                                <Dropdown.Link href={route('admin.usuarios.index')}>
+                                                    Usuários
+                                                </Dropdown.Link>
+                                                <Dropdown.Link href={route('admin.catalogos.index')}>
+                                                    Catalogo
+                                                </Dropdown.Link>
+                                                <Dropdown.Link href={route('admin.tags.index')}>
+                                                    Tags
+                                                </Dropdown.Link>
+                                                </>
+                                            )}
+
+                                            <Dropdown.Link href={route('servico.listar')}>
+                                                Meus serviços
                                             </Dropdown.Link>
-                                            <Dropdown.Link     
-                                                href={route('estabelecimento.index')}                                            >
-                                                Estabelecimentos
+                                            <Dropdown.Link href={route('estabelecimento.listar')}>
+                                                Meus estabelecimentos
                                             </Dropdown.Link>
                                             <Dropdown.Link
                                                 href={route('meus-dados.index')}                                            >
@@ -183,24 +199,27 @@ export default function MenuSuperior({ header, children }) {
                             <div className="border-t border-gray-200 pb-1 pt-4">
                                 <div className="px-4">
                                     <div className="text-base font-medium text-gray-800">
-                                        Fulano de tal
+                                        {user.name}
                                     </div>
                                     <div className="text-sm font-medium text-gray-500">
-                                        fulano@gmail.com
+                                        {user.email}
                                     </div>
                                 </div>
 
                                 <div className="mt-3 space-y-1">
                                     <ResponsiveNavLink
-                                        href={route('servico.index')}>
-                                        Serviço
-                                    </ResponsiveNavLink>
-                                    <ResponsiveNavLink>
-                                        href={route('estabelecimento.index')}
-                                        Estabelecimentos
+                                        href={route('servico.listar')}
+                                        active={route().current('servico.listar')}>
+                                        Meus serviços
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink
-                                        href={route('meus-dados.index')}>
+                                        href={route('estabelecimento.listar')}
+                                        active={route().current('estabelecimento.listar')}>
+                                        Meus estabelecimentos
+                                    </ResponsiveNavLink>
+                                    <ResponsiveNavLink
+                                        href={route('meus-dados.index')}
+                                        active={route().current('meus-dados.index')}>
                                         Meus dados
                                     </ResponsiveNavLink>
                                     <ResponsiveNavLink

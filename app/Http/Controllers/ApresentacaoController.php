@@ -33,7 +33,7 @@ class ApresentacaoController extends Controller
         $apresentacaoService = new ApresentacaoService();
         $servicos = $apresentacaoService->listarServicos($cidade,$texto,$tag_id);
 
-        $cidades = Endereco::select('id','cidade', 'uf')
+        $cidades = Endereco::selectRaw('MIN(id) as id, cidade, uf')
             ->groupBy('cidade', 'uf')
             ->get();
 

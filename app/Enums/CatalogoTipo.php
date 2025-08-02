@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum CatalogoTipo: string
 {
-    case SERVICO = 'SEV';
+    case SERVICO = 'SER';
     case ESTABELECIMENTO = 'EST';
 
     public function label(): string

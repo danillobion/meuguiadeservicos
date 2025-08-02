@@ -152,7 +152,7 @@ return new class extends Migration
 
         $dataServicos = array_map(fn($nome) => [
             'nome' => $nome,
-            'tipo' => 'SRV',
+            'tipo' => 'SER',
             'created_at' => $now,
             'updated_at' => $now,
         ], $servicos);
@@ -175,7 +175,7 @@ return new class extends Migration
 
         // DB::table('tags')
         //     ->whereIn('nome', $servicos)
-        //     ->where('tipo', 'SRV')
+        //     ->where('tipo', 'SER')
         //     ->delete();
 
         // DB::table('tags')

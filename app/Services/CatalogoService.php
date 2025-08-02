@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Hash;
 
 class CatalogoService
 {
-
     public function find($id = null, $tipo = null)
     {
         $user_id = auth()->user()->id;
@@ -23,6 +22,7 @@ class CatalogoService
         if(is_null($id)){
             $catalogo = new Catalogo();
             $catalogo['tipo'] = $tipo;
+
         }else{
             $catalogo = Catalogo::with("endereco", "tags", "contato")->where('user_id', $user_id)->find($id);
         }
@@ -30,8 +30,12 @@ class CatalogoService
         return $catalogo;
     }
 
-    public function findAll($tipo = null)
+    public function findAll($tipo = null, $superAdmin = false)
     {
+        if($superAdmin){
+            return Catalogo::with("endereco", "tags", "contato")->get();
+        }
+
         $catalogo = Catalogo::with("endereco", "tags", "contato")->where("user_id", auth()->user()->id)->where('tipo', $tipo)->get();
         return $catalogo;
     }
@@ -61,7 +65,7 @@ class CatalogoService
             $endereco->save();
             
             $contato = is_null($request['contato']['id']) ? new Contato() : Contato::find($request['contato']['id']);
-            $contato->telefone = $request['contato']['telefone'];
+            $contato->telefone = preg_replace('/[\-\(\)\s]/', '', $request['contato']['telefone']);
             $contato->email = $request['contato']['email'];
             $contato->whatsapp = $request['contato']['whatsapp'];
             $contato->telegram = $request['contato']['telegram'];
@@ -104,10 +108,40 @@ class CatalogoService
         }
     }
 
+    public function usuarioStore(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            
+            $usuario = $request['novo_usuario'] ? new User() : null;
+
+            $usuario->name = $request['nome_completo'];
+            $usuario->email = $request['email_login'];
+            $usuario->password = Hash::make($request['senha']);
+            $usuario->save(); 
+            
+            DB::commit();
+            if(!is_null($usuario)){
+                return $usuario;
+            }
+            return true;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
+        }
+    }
+
     public function deletar($id)
     {
         $catalogo = Catalogo::find($id);
-        $catalogo->delete();
-        return true;
+
+        if (!$catalogo) {
+            return false;
+        }
+
+        CatalogoTag::where('catalogo_id', $catalogo->id)->delete(); 
+
+        return $catalogo->delete();
     }
 }

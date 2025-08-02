@@ -26,7 +26,7 @@ class ConfiguracaoController extends Controller
     public function servicoIndex()
     {
         $catalogo = Catalogo::with("endereco", "tags")->where('user_id', auth()->user()->id)->where('tipo', CatalogoTipo::SERVICO)->first();
-        $tagServicos = Tag::select('id', 'nome')->where("tipo", "SRV")->get()
+        $tagServicos = Tag::select('id', 'nome')->where("tipo", "SER")->get()
             ->map(function($tag) {
             return [
                 'value' => $tag->id,

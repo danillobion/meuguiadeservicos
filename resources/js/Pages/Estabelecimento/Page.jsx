@@ -1,108 +1,160 @@
-import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
-import MenuSuperior from '@/Layouts/MenuSuperior';
-import { Head, usePage } from '@inertiajs/react';
-import { Link } from '@inertiajs/react';
-import { useEffect } from 'react';
-import { toast } from 'sonner';
+// import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
+// import MenuSuperior from '@/Layouts/MenuSuperior';
+// import { Head, usePage } from '@inertiajs/react';
+// import { Link } from '@inertiajs/react';
+// import { useEffect, useState } from 'react';
+// import { toast } from 'sonner';
 
-export default function Page({ estabelecimentos }) 
-{
-    const { flash } = usePage().props;
+// import {
+//   AlertDialog,
+//   AlertDialogAction,
+//   AlertDialogCancel,
+//   AlertDialogContent,
+//   AlertDialogDescription,
+//   AlertDialogFooter,
+//   AlertDialogHeader,
+//   AlertDialogTitle,
+//   AlertDialogTrigger,
+// } from "@/components/ui/alert-dialog"
+// import axios from 'axios';
+
+// export default function Page({ estabelecimentos }) 
+// {
+//     const { flash } = usePage().props;
+//     const [openConfirmId, setOpenConfirmId] = useState(null);
     
-    const cabecalho = {
-        titulo: "Estabelecimentos",
-        migalhas: [
-            { href: "/", label: "Inicio" },
-            { href: "/estabelecimentos", label: "Estabelecimentos" },
-        ],
-    };
+//     const cabecalho = {
+//         titulo: "Estabelecimentos",
+//         migalhas: [
+//             { href: "/", label: "Inicio" },
+//             { href: "/estabelecimentos", label: "Estabelecimentos" },
+//         ],
+//     };
 
-    useEffect(() => {
-        if (flash?.success) {
-        toast.success(flash.success);
-        }
-        if (flash?.error) {
-        toast.error(flash.error);
-        }
-    }, [flash]);
+//     const handleDeletar = (id) => {
+//         axios.delete(`/estabelecimento/${id}`).then((response) => {
+//             toast.success(response.data.message);
+//             window.location.reload();
+//         }).catch((error) => {
+//             toast.error(error.response.data.message);
+//         });
+//     };
 
-    return (
-        <MenuSuperior>
-            <Head title={cabecalho.titulo} />
-            <div className="pr-3 pl-3 mx-auto max-w-7xl sm:px-6 lg:px-8 pb-12">
+//     useEffect(() => {
+//         if (flash?.success) {
+//         toast.success(flash.success);
+//         }
+//         if (flash?.error) {
+//         toast.error(flash.error);
+//         }
+//     }, [flash]);
 
-                <CabecalhoPagina cabecalho={cabecalho} />
+//     return (
+//         <MenuSuperior>
+//             <Head title={cabecalho.titulo} />
+//             <div className="pr-3 pl-3 mx-auto max-w-7xl sm:px-6 lg:px-8 pb-12">
 
-                <div className="overflow-hidden bg-white shadow-lg rounded-lg z-10">
-                    <div className="text-gray-900">
+//                 <CabecalhoPagina cabecalho={cabecalho} />
 
-                        <div className="relative overflow-x-auto">
+//                 <div className="overflow-hidden bg-white shadow-lg rounded-lg z-10">
+//                     <div className="text-gray-900">
+
+//                         <div className="relative overflow-x-auto">
                             
-                            {/* Nome */}
-                            <div className="space-y-2 flex justify-between p-6">
-                                <h1 className="text-2xl text-gray-600 flex items-center">Estabelecimentos cadastrados</h1>
-                                <Link
-                                    href={`/estabelecimento/cadastro/null`}
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-md text-md shadow"
-                                >
-                                    Novo
-                                </Link>
-                            </div>
-                            <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-                                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-3">
-                                            Nome
-                                        </th>
-                                        <th scope="col" className="px-6 py-3">
-                                            Descrição
-                                        </th>
-                                        <th scope="col" className="px-6 py-3">
-                                            Ações
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
+//                             {/* Nome */}
+//                             <div className="space-y-2 flex justify-between p-6">
+//                                 <h1 className="text-2xl text-gray-600 flex items-center">Estabelecimentos cadastrados</h1>
+//                                 <Link
+//                                     href={`/estabelecimento/cadastro/null`}
+//                                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-md text-md shadow"
+//                                 >
+//                                     Novo
+//                                 </Link>
+//                             </div>
+//                             <table className="w-full text-sm text-left rtl:text-right text-gray-500">
+//                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+//                                     <tr>
+//                                         <th scope="col" className="px-6 py-3">
+//                                             Nome
+//                                         </th>
+//                                         <th scope="col" className="px-6 py-3">
+//                                             Descrição
+//                                         </th>
+//                                         <th scope="col" className="px-6 py-3">
+//                                             Ações
+//                                         </th>
+//                                     </tr>
+//                                 </thead>
+//                                 <tbody>
 
-                                    {estabelecimentos && estabelecimentos.map((estabelecimento) => (
-                                        <tr className="bg-white border-b border-gray-200"
-                                            key={estabelecimento.id}>
-                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                                {estabelecimento.nome}
-                                            </th>
-                                            <td className="px-6 py-4">
-                                                {estabelecimento.descricao}
-                                            </td>
-                                            <td className="px-6 py-4 space-x-2">
-                                            <Link
-                                                href={`/estabelecimento/cadastro/${estabelecimento.id}`}
-                                                className="bg-gray-200 hover:bg-gray-300 text-black font-bold px-4 py-2 rounded-md"
-                                            >
-                                                Editar
-                                            </Link>
-                                            <button
-                                                className="bg-gray-200 hover:bg-gray-300 text-red-500 font-bold px-4 py-2 rounded-md"
-                                            >
-                                                Deletar
-                                            </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {estabelecimentos.length === 0 && (
-                                        <tr>
-                                            <th scope="col" className="px-6 py-3">
-                                                Nenhum estabelecimento cadastrado
-                                            </th>
-                                        </tr>
-                                    )}
+//                                     {estabelecimentos && estabelecimentos.map((estabelecimento) => (
+//                                         <tr className="bg-white border-b border-gray-200"
+//                                             key={estabelecimento.id}>
+//                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+//                                                 {estabelecimento.nome}
+//                                             </th>
+//                                             <td className="px-6 py-4">
+//                                                 {estabelecimento.descricao}
+//                                             </td>
+//                                             <td className="px-6 py-4 space-x-2">
+//                                             <Link
+//                                                 href={`/estabelecimento/cadastro/${estabelecimento.id}`}
+//                                                 className="bg-gray-200 hover:bg-gray-300 text-black font-bold px-4 py-2 rounded-md"
+//                                             >
+//                                                 Editar
+//                                             </Link>
+                                            
+//                                                 <AlertDialog open={openConfirmId === estabelecimento.id} onOpenChange={(isOpen) => {
+//                                                     if (!isOpen) {
+//                                                     setOpenConfirmId(null);
+//                                                     }
+//                                                 }}>
+//                                                     <AlertDialogTrigger
+//                                                     type="button"
+//                                                     className="bg-gray-200 hover:bg-gray-300 text-red-600 font-bold px-4 py-2 rounded-md"
+//                                                     onClick={() => setOpenConfirmId(estabelecimento.id)}
+//                                                     >
+//                                                     Deletar
+//                                                     </AlertDialogTrigger>
+
+//                                                     <AlertDialogContent>
+//                                                     <AlertDialogHeader>
+//                                                         <AlertDialogTitle>Deseja deletar: <b>{estabelecimento.nome}</b>?</AlertDialogTitle>
+//                                                         <AlertDialogDescription>Essa ação não pode ser desfeita</AlertDialogDescription>
+//                                                     </AlertDialogHeader>
+//                                                     <AlertDialogFooter>
+//                                                         <AlertDialogCancel onClick={() => setOpenConfirmId(null)}>Cancelar</AlertDialogCancel>
+//                                                         <AlertDialogAction
+//                                                           className="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-md"
+//                                                             onClick={() => {
+//                                                                 setOpenConfirmId(null);
+//                                                                 handleDeletar(estabelecimento.id);
+//                                                             }}
+//                                                         >
+//                                                         Sim, quero deletar!
+//                                                         </AlertDialogAction>
+//                                                     </AlertDialogFooter>
+//                                                     </AlertDialogContent>
+//                                                 </AlertDialog>
+
+//                                             </td>
+//                                         </tr>
+//                                     ))}
+//                                     {estabelecimentos.length === 0 && (
+//                                         <tr>
+//                                             <th scope="col" className="px-6 py-3">
+//                                                 Nenhum estabelecimento cadastrado
+//                                             </th>
+//                                         </tr>
+//                                     )}
                                     
-                                </tbody>
-                            </table>
-                        </div>
+//                                 </tbody>
+//                             </table>
+//                         </div>
 
-                    </div>
-                </div>
-            </div>
-        </MenuSuperior>
-    );
-}
+//                     </div>
+//                 </div>
+//             </div>
+//         </MenuSuperior>
+//     );
+// }

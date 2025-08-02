@@ -1,6 +1,6 @@
 import MenuSuperior from '@/Layouts/MenuSuperior';
 import { Head, Link } from '@inertiajs/react';
-import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
+import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
 import { formatarTelefone } from '@/utils/formatarTelefone';
 import { ArrowLeft, Facebook, Globe, Instagram, Mail, MapPin, Phone, User } from 'lucide-react';
 

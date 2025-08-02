@@ -1,9 +1,9 @@
-import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
-import CardServico from '@/Components/ui/CardServico';
+import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
+import CardServico from '@/components/ui/CardServico';
 import MenuSuperior from '@/Layouts/MenuSuperior';
 import { Search,MapPin } from 'lucide-react';
 import { useState,useEffect } from 'react';
-import SelectInput from '@/Components/SelectInput';
+import SelectInput from '@/components/SelectInput';
 import Masonry from 'react-masonry-css';
 import { Head, Link,usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
@@ -108,7 +108,7 @@ export default function Apresentacao()
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
-            O Lorem Ipsum é um texto modelo da indústria tipográfica e de impressão. O Lorem Ipsum tem vindo a ser o texto padrão usado por estas indústrias desde o ano de 1500, quando uma misturou os caracteres de um texto para criar um espécime de livro.          
+            O Meu Guia de Serviços é uma plataforma colaborativa onde os usuários ajudam a construir uma lista de serviços e estabelecimentos, como pedreiro, pintor, eletricista e opções como comércio local, saúde, educação e turismo.
           </motion.span>        
         </div>
           
@@ -139,7 +139,7 @@ export default function Apresentacao()
               type="text"
               value={busca}
               onChange={handleInputChange}
-              className="bg-white shadow-lg text-2xl py-4 pl-12 pr-4 w-full border border-gray-300 rounded-xl focus:outline-none"
+              className="bg-white shadow-xl text-2xl py-4 pl-12 pr-4 w-full border border-gray-300 rounded-xl focus:outline-none"
               placeholder="Pesquisar por serviço ou estabelecimento"
             />
           </div>

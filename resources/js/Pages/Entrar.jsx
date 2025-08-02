@@ -1,12 +1,12 @@
-import InputLabel from '@/Components/InputLabel';
-import SelectInput from '@/Components/SelectInput';
-import TextInput from '@/Components/TextInput';
+import InputLabel from '@/components/InputLabel';
+import SelectInput from '@/components/SelectInput';
+import TextInput from '@/components/TextInput';
 import MenuSuperior from '@/Layouts/MenuSuperior';
 import { Link, Head, useForm } from '@inertiajs/react';
 import Select from 'react-select';
 import { Search } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
+import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
 import { toast } from "sonner"
 import axios from 'axios';
 

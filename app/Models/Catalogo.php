@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 
 class Catalogo extends Model
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $table = 'catalogos';
 
@@ -20,6 +22,8 @@ class Catalogo extends Model
         'descricao',
         'tipo',
     ];
+    
+    protected $appends = ['created_at_formatado'];
 
     public function tags()
     {
@@ -40,5 +44,13 @@ class Catalogo extends Model
     {
         return $this->belongsTo(Contato::class);
     }
+    
+    public function getCreatedAtFormatadoAttribute()
+    {
+        return Carbon::parse($this->created_at)
+                    ->locale('pt_BR')
+                    ->translatedFormat('d \d\e F \d\e Y - H:i');
+    }
+
 
 }

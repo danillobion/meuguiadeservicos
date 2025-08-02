@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  # Serviço do MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: banco_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: mgs_db
+      MYSQL_ROOT_PASSWORD: mgs@Areia2020
+      MYSQL_USER: msgRoot
+      MYSQL_PASSWORD: mgs@Areia2020
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: laravel_app
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "80:80"
+    networks:
+      - laravel_network
+    depends_on:
+      - mysql
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US.UTF-8
+      - LC_ALL=en_US.UTF-8
+    working_dir: /var/www/html
+    restart: always
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  laravel_network:
+    driver: bridge
+

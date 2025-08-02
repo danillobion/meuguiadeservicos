@@ -1,13 +1,13 @@
-import InputLabel from '@/Components/InputLabel';
-import TextInput from '@/Components/TextInput';
-import AbasPagina from '@/Components/ui/AbasPagina';
-import CabecalhoPagina from '@/Components/ui/CabecalhoPagina';
+import InputLabel from '@/components/InputLabel';
+import TextInput from '@/components/TextInput';
+import AbasPagina from '@/components/ui/AbasPagina';
+import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
 import MenuSuperior from '@/Layouts/MenuSuperior';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { formatarTelefone } from '@/utils/formatarTelefone';
 import { toast } from "sonner"
-import InputError from '@/Components/InputError';
+import InputError from '@/components/InputError';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -122,43 +122,44 @@ export default function MeusDados({user})
                             <InputError message={errors[`telefone`]} className="mt-2" />
                             </div>
 
-                            <AlertDialog open={openConfirm} onOpenChange={setOpenConfirm}>
-                                <AlertDialogTrigger
-                                    type="button"
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-4 rounded w-full text-lg shadow"
-                                >
-                                    {processing ? 'Processando...' : 'Salvar'}
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Deseja salvar?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            Essa ação poderá ser alterada posteriormente caso seja necessário.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                                        <AlertDialogAction
-                                            type="button"
-                                            disabled={processing}
-                                            onClick={() => {
-                                                setOpenConfirm(false);
-                                                handleSubmit(new Event('submit'));
-                                            }}
-                                        >
-                                            {processing ? 'Processando...' : 'Sim, quero salvar!'}
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
 
-                            <div className="mt-4">
-                            <Link
-                                href={route('apresentacao.index')}
-                                className="block w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold px-4 py-4 rounded text-lg"
-                            >
-                                Cancelar
-                            </Link>
+                            <div className='flex justify-end space-x-2'>
+                                <Link
+                                    href={route('apresentacao.index')}
+                                    className="inline-flex items-center px-8 py-4 text-md font-medium text-center text-black bg-gray-200 rounded-lg hover:bg-gray-300"
+                                >
+                                    Cancelar
+                                </Link>
+                                <AlertDialog open={openConfirm} onOpenChange={setOpenConfirm}>
+                                    <AlertDialogTrigger
+                                        type="button"
+                                        className="shadow-md inline-flex items-center px-8 py-4 text-md font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+                                    >
+                                        {processing ? 'Processando...' : 'Salvar'}
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Deseja salvar?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                Essa ação poderá ser alterada posteriormente caso seja necessário.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                type="button"
+                                                disabled={processing}
+                                                onClick={() => {
+                                                    setOpenConfirm(false);
+                                                    handleSubmit(new Event('submit'));
+                                                }}
+                                            >
+                                                {processing ? 'Processando...' : 'Sim, quero salvar!'}
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+
                             </div>
                         </form>
                     </div>
