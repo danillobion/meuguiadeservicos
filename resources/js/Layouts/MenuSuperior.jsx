@@ -19,7 +19,7 @@ export default function MenuSuperior({ header, children }) {
                         <div className="flex">
                             <div className="flex shrink-0 items-center">
                                 <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
+                                    <ApplicationLogo className="block h-6 w-auto fill-current text-gray-800" />
                                 </Link>
                             </div>
                         </div>
@@ -32,14 +32,6 @@ export default function MenuSuperior({ header, children }) {
                                             {user === null ? (
                                                 
                                                 <div className="hidden space-x-3 sm:-my-px sm:ms-10 sm:flex">
-
-                                                    {/* <NavLink
-                                                        href={route('como-divulgar')}
-                                                        active={route().current('como-divulgar')}
-                                                    >
-                                                        Como divulgar?
-                                                    </NavLink> */}
-
                                                     <NavLink
                                                         href={route('catalogo.index')}
                                                         active={route().current('catalogo.index')}
@@ -55,15 +47,7 @@ export default function MenuSuperior({ header, children }) {
                                                     </NavLink>
                                                 </div>
                                             ) : (
-                                                <div className="hidden space-x-3 sm:-my-px sm:ms-10 sm:flex">
-
-                                                    {/* <NavLink
-                                                        href={route('resumo.index')}
-                                                        active={route().current('resumo.index')}
-                                                    >
-                                                        Resumo
-                                                    </NavLink> */}
-                                                </div>
+                                                <></>
                                             )}
                                             {user === null ? (
                                                 <span className="inline-flex rounded-md"></span>
@@ -207,6 +191,30 @@ export default function MenuSuperior({ header, children }) {
                                 </div>
 
                                 <div className="mt-3 space-y-1">
+                                    {user?.root == true && (
+                                        <>
+                                            <ResponsiveNavLink
+                                                href={route('admin.dashboard.index')}
+                                                active={route().current('admin.dashboard.index')}>
+                                                Dashboard
+                                            </ResponsiveNavLink>
+                                            <ResponsiveNavLink
+                                                href={route('admin.usuarios.index')}
+                                                active={route().current('admin.usuarios.index')}>
+                                                Usuários
+                                            </ResponsiveNavLink>
+                                            <ResponsiveNavLink
+                                                href={route('admin.catalogos.index')}
+                                                active={route().current('admin.catalogos.index')}>
+                                                Catalogo
+                                            </ResponsiveNavLink>
+                                            <ResponsiveNavLink
+                                                href={route('admin.tags.index')}
+                                                active={route().current('admin.tags.index')}>
+                                                Tags
+                                            </ResponsiveNavLink>
+                                        </>
+                                    )}
                                     <ResponsiveNavLink
                                         href={route('servico.listar')}
                                         active={route().current('servico.listar')}>
@@ -235,26 +243,24 @@ export default function MenuSuperior({ header, children }) {
                     ) : (
                         <>
                             <div className="space-y-1 pb-3 pt-2">
-                                <ResponsiveNavLink
-                                    href={route('apresentacao.index')}
-                                    active={route().current('apresentacao.index')}
-                                >
-                                    Apresentação
-                                </ResponsiveNavLink>
-
-                                <ResponsiveNavLink
-                                    href={route('apresentacao.index')}
-                                    active={route().current('apresentacao.index')}
-                                >
-                                    Divulgação
-                                </ResponsiveNavLink>
-
-                                <ResponsiveNavLink
-                                    href={route('apresentacao.index')}
-                                    active={route().current('apresentacao.index')}
-                                >
-                                    Sobre
-                                </ResponsiveNavLink>
+                                {user === null ? (
+                                    <>
+                                        <ResponsiveNavLink
+                                            href={route('catalogo.index')}
+                                            active={route().current('catalogo.index')}
+                                            >
+                                            Cadastre-se
+                                        </ResponsiveNavLink>
+                                        <ResponsiveNavLink
+                                            href={route('login')}
+                                            active={route().current('login')}
+                                            >
+                                            Entrar
+                                        </ResponsiveNavLink>
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
                             </div>
                         </>
                     )}

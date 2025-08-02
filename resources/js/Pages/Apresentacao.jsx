@@ -91,9 +91,9 @@ export default function Apresentacao()
         <Head title={cabecalho.titulo} />
         <div className="p-3 mx-auto max-w-7xl sm:px-6 lg:px-8 pb-12">
 
-        <div className="flex flex-col items-center pt-8 pb-8">
+        <div className="flex flex-col items-center pt-2 pb-8 md:pt-8">
           <motion.h1
-            className="mb-4 text-4xl font-bold text-gray-900 sm:text-7xl"
+            className="mb-4 text-4xl font-bold text-gray-900 sm:text-7xl hidden sm:block"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
@@ -108,7 +108,7 @@ export default function Apresentacao()
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, delay: 0.3 }}
           >
-            O Meu Guia de Serviços é uma plataforma colaborativa onde os usuários ajudam a construir uma lista de serviços e estabelecimentos, como pedreiro, pintor, eletricista e opções como comércio local, saúde, educação e turismo.
+            O <b>Meu Guia de Serviços</b> é uma plataforma colaborativa onde os usuários ajudam a construir uma lista de serviços e estabelecimentos, como pedreiro, pintor, eletricista e opções como comércio local, saúde, educação e turismo.
           </motion.span>        
         </div>
           
