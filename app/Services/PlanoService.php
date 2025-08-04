@@ -24,21 +24,24 @@ class PlanoService
             if($disponivel == 0){
                 return [
                     'credito' => 0,
-                    'mensagem' => ' Vocé tem 0 crédito(s) disponível(s).'
+                    'mensagem' => ' Vocé tem 0 crédito(s) disponível(s).',
+                    'liberado' => false,
                 ];
             };
 
             if($disponivel == 1){
                 return [
                     'credito' => 1,
-                    'mensagem' => ' Vocé tem 1 crédito(s) disponível(s).'
+                    'mensagem' => ' Vocé tem 1 crédito(s) disponível(s).',
+                    'liberado' => true,
                 ];
             };
 
             if($disponivel == 2){
                 return [
                     'credito' => 2,
-                    'mensagem' => ' Vocé tem 2 crédito(s) disponível(s).'
+                    'mensagem' => ' Vocé tem 2 crédito(s) disponível(s).',
+                    'liberado' => true,
                 ];
             };
         }
@@ -51,21 +54,24 @@ class PlanoService
             if($disponivel == 0){
                 return [
                     'credito' => 0,
-                    'mensagem' => ' Vocé tem 0 crédito(s) disponível(s).'
+                    'mensagem' => ' Vocé tem 0 crédito(s) disponível(s).',
+                    'liberado' => false,
                 ];
             };
 
             if($disponivel == 1){
                 return [
                     'credito' => 1,
-                    'mensagem' => ' Vocé tem 1 crédito(s) disponível(s).'
+                    'mensagem' => ' Vocé tem 1 crédito(s) disponível(s).',
+                    'liberado' => true,
                 ];
             };
 
             if($disponivel == 2){
                 return [
                     'credito' => 2,
-                    'mensagem' => ' Vocé tem 2 crédito(s) disponível(s).'
+                    'mensagem' => ' Vocé tem 2 crédito(s) disponível(s).',
+                    'liberado' => true,
                 ];
             };
         }

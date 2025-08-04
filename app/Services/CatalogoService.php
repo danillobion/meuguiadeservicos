@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\CatalogoTipo;
 use App\Models\Catalogo;
 use App\Models\CatalogoTag;
 use App\Models\Contato;

@@ -1,17 +1,17 @@
-import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
 import CardServico from '@/components/ui/CardServico';
 import MenuSuperior from '@/Layouts/MenuSuperior';
 import { Search,MapPin } from 'lucide-react';
 import { useState,useEffect } from 'react';
 import SelectInput from '@/components/SelectInput';
 import Masonry from 'react-masonry-css';
-import { Head, Link,usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-
+import { Tutorial } from '@/components/Dialog/Tutorial';
 
 export default function Apresentacao() 
 {
+  const user = usePage().props.auth.user;
   const { flash } = usePage().props;
   
   const [listaCidades, setListaCidades] = useState([]);
@@ -21,6 +21,8 @@ export default function Apresentacao()
   const [cidade, setCidade] = useState();
   const [busca, setBusca] = useState('');
   const [tagSelecionada, setTagSelecionada] = useState(null);
+  const [mostrarTutorial, setMostrarTutorial] = useState(false);
+
 
   const breakpointColumnsObj = {
     default: 4,
@@ -73,7 +75,22 @@ export default function Apresentacao()
     buscar(cidade, busca, novaTag);
   };
 
+  const handleTutorial = (ocultar) => {
+    if (ocultar) {
+      axios.post(route('apresentacao.tutorial'))
+        .then(() => setMostrarTutorial(false))
+        .catch((error) => {
+          toast.error(error.response?.data?.message || 'Erro ao ocultar tutorial.');
+        });
+    } else {
+      setMostrarTutorial(false);
+    }
+  };
+
   useEffect(() => {
+    if (user && user.tutorial === 1) {
+      setMostrarTutorial(true);
+    }
     buscar();
   }, []);
 
@@ -178,6 +195,8 @@ export default function Apresentacao()
               <p className="text-center text-gray-500">Nenhum registro encontrado.</p>
             )}
         </div>
+
+        <Tutorial open={mostrarTutorial} onClose={handleTutorial} />
 
         </div>
     </MenuSuperior>

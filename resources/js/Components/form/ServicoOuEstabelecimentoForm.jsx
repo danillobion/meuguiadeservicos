@@ -24,6 +24,17 @@ import InputError from "../InputError";
 
 export default function ServicoOuEstabelecimentoForm({ catalogo, tags, tipo }) {
     const { flash } = usePage().props;
+    
+    const camposEndereco = ['uf', 'cidade', 'bairro', 'logradouro', 'complemento', 'numero'];
+    const labels = {
+    uf: 'UF',
+    cidade: 'Cidade',
+    bairro: 'Bairro',
+    logradouro: 'Logradouro',
+    complemento: 'Complemento',
+    numero: 'Número',
+    };
+
     const { data, setData, post, processing, errors } = useForm({
             id: catalogo?.id || '',
             nome: catalogo?.nome || '',
@@ -143,11 +154,18 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags, tipo }) {
                         options={tagHabilidades}
                         isMulti
                         value={data.habilidades}
-                        onChange={(e) => setData('habilidades', e)}
+                        onChange={(selectedOptions) => {
+                            if (selectedOptions.length <= 3) {
+                                setData('habilidades', selectedOptions);
+                            }else{
+                                toast.error('Você atingiu o limite de 3 habilidades');
+                            }
+                        }}
                         placeholder="Selecione as habilidades"
                         className='mt-1 block w-full text-xl'
                     />
                     <InputError message={errors.habilidades} className="mt-2" />
+                    <span className="text-sm text-gray-600">Limite máximo de 3 habilidades.</span>
                 </div>
 
                 {/* Contato */}
@@ -197,7 +215,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags, tipo }) {
 
                 {/* Endereço */}
                 <h1 className="text-2xl text-gray-600">Endereço</h1>
-                <div className="space-y-2 flex w-1/2">
+                <div className="space-y-2 flex md:w-1/2">
                     <div className="w-full">
                         <InputLabel htmlFor="cep" value="CEP" />
                         <div className="flex gap-3">
@@ -215,7 +233,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags, tipo }) {
                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 rounded flex items-center gap-2 text-xl"
                                 onClick={() => handleCep(data.endereco.cep)}
                             >
-                                <Search /> Pesquisar
+                                <Search /> <span className="hidden md:block">Pesquisar</span>
                             </button>
                         </div>
                         <InputError message={errors['endereco.cep']} className="mt-2" />
@@ -223,25 +241,32 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags, tipo }) {
                 </div>
 
                 {/* Restante dos campos de endereço */}
-                {['uf', 'cidade', 'bairro', 'logradouro', 'complemento', 'numero'].map((campo) => (
+                {camposEndereco.map((campo) => (
                     <div key={campo} className="space-y-2">
-                        <InputLabel htmlFor={campo} value={campo.charAt(0).toUpperCase() + campo.slice(1)} />
+                        <InputLabel htmlFor={campo} value={labels[campo]} />
+                        
                         <TextInput
-                            id={campo}
-                            type="text"
-                            name={campo}
-                            value={data.endereco[campo]}
-                            onChange={e => setData('endereco', { ...data.endereco, [campo]: e.target.value })}
-                            className="flex-1 mt-1 block w-full py-4 text-2xl"
-                            placeholder={`Digite o ${campo}`}
-                            disabled={['uf', 'cidade', 'bairro', 'logradouro'].includes(campo)}
+                        id={campo}
+                        type="text"
+                        name={campo}
+                        value={data.endereco[campo]}
+                        onChange={e =>
+                            setData('endereco', {
+                            ...data.endereco,
+                            [campo]: e.target.value
+                            })
+                        }
+                        className="flex-1 mt-1 block w-full py-4 text-2xl"
+                        placeholder={`Digite o ${labels[campo].toLowerCase()}`}
+                        disabled={['uf', 'cidade', 'bairro', 'logradouro'].includes(campo)}
                         />
+                        
                         <InputError
-                            message={errors[`endereco.${campo}`]?.replace('endereco.', '')}
-                            className="mt-2"
-                        />                    
+                        message={errors[`endereco.${campo}`]?.replace('endereco.', '')}
+                        className="mt-2"
+                        />
                     </div>
-                ))}
+                    ))}
 
                 <div className='flex justify-end space-x-2 pt-5'>
                     <Link

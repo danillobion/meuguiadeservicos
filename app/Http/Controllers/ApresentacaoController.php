@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Catalogo;
 use App\Models\Endereco;
 use App\Models\Tag;
+use App\Models\User;
 use Inertia\Inertia;
 use App\Services\ApresentacaoService;
 
@@ -65,5 +66,14 @@ class ApresentacaoController extends Controller
         return Inertia::render('Detalhe',[
             'catalogo' => $catalogo
         ]);
+    }
+
+    public function tutorial()
+    {
+        $usuario = auth()->user();
+        $usuario->tutorial = false;
+        $usuario->save();
+
+        return response()->json(['success' => true]);
     }
 }

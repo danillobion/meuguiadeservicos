@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
     // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::post('/tutorial', [ApresentacaoController::class, 'tutorial'])->name('apresentacao.tutorial');
+
     // meus dados
     Route::get('/meus-dados', [UsuarioController::class, 'meusDadosIndex'])->name('meus-dados.index');
     Route::get('/meus-dados/acesso', [UsuarioController::class, 'acessoIndex'])->name('meus-dados.acesso.index');

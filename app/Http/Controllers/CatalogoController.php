@@ -106,6 +106,13 @@ class CatalogoController extends Controller
     //encontrar
     public function catalogoServicoEditar($id = null)
     {
+        $planoService = new PlanoService();
+        $credito = $planoService->credito(CatalogoTipo::SERVICO->value);
+
+        if($credito['liberado'] == false){
+            return redirect()->route('servico.listar')->with('error', $credito['mensagem']);
+        }
+
         $catalogoService = new CatalogoService();
         $catalogo = $catalogoService->find($id);
 
@@ -127,6 +134,13 @@ class CatalogoController extends Controller
     }
     public function catalogoEstabelecimentoEditar($id = null)
     {
+        $planoService = new PlanoService();
+        $credito = $planoService->credito(CatalogoTipo::ESTABELECIMENTO->value);
+
+        if($credito['liberado'] == false){
+            return redirect()->route('servico.listar')->with('error', $credito['mensagem']);
+        }
+
         $catalogoService = new CatalogoService();
         $catalogo = $catalogoService->find($id);
 
@@ -173,7 +187,7 @@ class CatalogoController extends Controller
             'contato.facebook' => 'nullable',
             'contato.instagram' => 'nullable',
 
-            'habilidades' => 'required|array',
+            'habilidades' => 'required|array|max:3',
         ])->validate();
 
         $catalogoService = new CatalogoService();

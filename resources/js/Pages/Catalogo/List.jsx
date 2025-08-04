@@ -70,7 +70,7 @@ export default function List({ catalogo,tipo,credito })
                         <div className="relative overflow-x-auto">
                             {/* Nome */}
                             <div className="space-y-2 flex justify-between p-6">
-                                <h1 className="text-2xl text-gray-600 flex items-center">{tipo == "EST" ? "Lista de Estabelecimentos" : "Lista de Serviços"}</h1>
+                                <h1 className="text-2xl text-gray-600 flex items-center">{tipo == "EST" ? "Estabelecimentos" : "Serviços"}</h1>
 
                                 {credito?.credito != 0 ? (
                                     <Link
@@ -110,7 +110,7 @@ export default function List({ catalogo,tipo,credito })
                                             <td className="px-6 py-4">
                                                 {item.descricao}
                                             </td>
-                                            <td className="px-6 py-4 space-x-2">
+                                            <td className="px-6 py-4 md:space-x-1 space-y-2">
                                             <Link
                                                 href={tipo == "EST" ? route("estabelecimento.editar", { id: item.id }) : route("servico.editar", { id: item.id })}
                                                 className="bg-gray-200 hover:bg-gray-300 text-black font-bold px-4 py-2 rounded-md"
