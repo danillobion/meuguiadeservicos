@@ -5,6 +5,7 @@ import ResponsiveNavLink from '@/components/ResponsiveNavLink';
 import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { Toaster } from "@/components/ui/sonner";
+import { formatarNome } from '@/utils/formatarNome';
 
 function AdminLinks({ isMobile = false }) {
   const user = usePage().props.auth.user;
@@ -55,7 +56,7 @@ export default function MenuSuperior({ header, children }) {
                 <Dropdown>
                   <Dropdown.Trigger>
                     <button type="button" className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none">
-                      Olá, {user.name}
+                      Olá, {formatarNome(user.name)}
                       <svg className="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
                       </svg>
@@ -109,7 +110,7 @@ export default function MenuSuperior({ header, children }) {
 
                 <div className="border-t border-gray-200 pb-1 pt-4">
                   <div className="px-4">
-                    <div className="text-base font-medium text-gray-800">{user.name}</div>
+                    <div className="text-base font-medium text-gray-800">{formatarNome(user.name)}</div>
                     <div className="text-sm font-medium text-gray-500">{user.email}</div>
                   </div>
 

@@ -1,17 +1,10 @@
 import MenuSuperior from '@/Layouts/MenuSuperior';
 import { Head, Link } from '@inertiajs/react';
-import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
+import { formatarNome } from '@/utils/formatarNome';
 import { formatarTelefone } from '@/utils/formatarTelefone';
 import { ArrowLeft, Facebook, Globe, Instagram, Mail, MapPin, Phone, User } from 'lucide-react';
 
 export default function Detalhe({catalogo}) {
-  const cabecalho = {
-    titulo: catalogo.nome,
-    migalhas: [
-      { href: "/", label: "Inicio" },
-      { href: "#", label: catalogo.nome },
-    ],
-  };
 
   return (
     <MenuSuperior>
@@ -52,7 +45,7 @@ export default function Detalhe({catalogo}) {
           <div className="mb-4">
             <p className='text-gray-600'>Cidade/UF</p>
             <div className="flex mt-2">
-              <MapPin size={18} className='mt-0.5' />
+              <MapPin size={18} className='mt-0.5 mr-1' />
               <p className="font-medium text-gray-700">
                 {catalogo.endereco.cidade}/{catalogo.endereco.uf}
               </p>
@@ -66,7 +59,7 @@ export default function Detalhe({catalogo}) {
               <div className="flex mt-2">
                 <User size={18} className='mt-0.5 mr-1' />
                 <p className="font-medium text-gray-700">
-                  {catalogo.user.name}
+                  {formatarNome(catalogo.user.name)}
                 </p>
               </div>
             </div>
@@ -76,9 +69,14 @@ export default function Detalhe({catalogo}) {
               <p className='text-gray-600'>Site</p>
               <div className="flex mt-2">
                 <Globe size={18} className='mt-1 mr-1' />
-                <p className="font-medium text-gray-700">
+                <a
+                  href={catalogo.contato.site.startsWith('http') ? catalogo.contato.site : `https://${catalogo.contato.site}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-gray-700 hover:underline"
+                >
                   {catalogo.contato.site}
-                </p>
+                </a>
               </div>
             </div>
           )}
@@ -98,9 +96,14 @@ export default function Detalhe({catalogo}) {
               <p className='text-gray-600'>WhatsApp</p>
               <div className="flex mt-2">
                 <Phone size={18} className='mt-0.5 mr-2' />
-                <p className="font-medium text-gray-700">
+                <a
+                  href={`https://wa.me/${catalogo.contato.whatsapp.replace(/\D/g, '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
                   {formatarTelefone(catalogo.contato.whatsapp)}
-                </p>
+                </a>
               </div>
             </div>
           )}
