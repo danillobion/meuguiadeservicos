@@ -47,8 +47,9 @@ export function EditarTag({ item = null, onSalvar })
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{isEditando ? "Editar tag" : "Nova tag"}</AlertDialogTitle>
-          <AlertDialogDescription>Preencha os campos abaixo</AlertDialogDescription>
-
+          
+          <div className="space-y-2 mt-4 text-left">
+            <InputLabel htmlFor="tipo" value="Preencha os campos abaixo" />
           <SelectInput
             id="tipo"
             name="tipo"
@@ -60,8 +61,9 @@ export function EditarTag({ item = null, onSalvar })
             <option value="SER">Serviço</option>
             <option value="EST">Estabelecimento</option>
           </SelectInput>
+          </div>
 
-          <div className="space-y-2 mt-4">
+          <div className="space-y-2 mt-4 text-left">
             <InputLabel htmlFor="nome" value="Nome" />
             <TextInput
               id="nome"

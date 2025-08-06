@@ -72,6 +72,7 @@ Route::middleware(['auth', 'root'])->group(function () {
     Route::get('/admin/usuarios', [AdminController::class, 'usuariosIndex'])->name('admin.usuarios.index');
     Route::get('/admin/usuarios/find-all', [AdminController::class, 'usuarioFindAll'])->name('admin.usuarios.find-all');
     Route::get('/admin/usuarios/alterar-status/{id}', [AdminController::class, 'usuarioAlterarStatus'])->name('admin.usuarios.alterar-status');
+    Route::post('/admin/usuarios/alterar-credito', [AdminController::class, 'usuarioAlterarCredito'])->name('admin.usuarios.alterar-credito');
 
     Route::get('/admin/catalogos', [AdminController::class, 'catalogosIndex'])->name('admin.catalogos.index');
     Route::get('/admin/catalogos/find-all', [AdminController::class, 'catalogosFindAll'])->name('admin.catalogos.find-all');

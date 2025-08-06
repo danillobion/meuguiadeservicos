@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\CatalogoTipo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -38,9 +40,22 @@ class User extends Authenticatable
         'updated_at',
     ];
 
+    protected $appends = ['quantidade_servico_cadastrado', 'quantidade_estabelecimento_cadastrado'];
+
     public function plano()
     {
         return $this->hasOne(UserPlanos::class);
+    }
+
+    public function getQuantidadeServicoCadastradoAttribute()
+    {
+        return Catalogo::where('user_id', $this->id)->where('tipo', CatalogoTipo::SERVICO->value)->count();
+
+    }
+
+    public function getQuantidadeEstabelecimentoCadastradoAttribute()
+    {
+        return Catalogo::where('user_id', $this->id)->where('tipo', CatalogoTipo::ESTABELECIMENTO->value)->count();
     }
 
     /**

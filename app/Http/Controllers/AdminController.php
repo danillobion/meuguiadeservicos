@@ -51,6 +51,12 @@ class AdminController extends Controller
         return $userService->alterarStatus($id);
     }
 
+    public function usuarioAlterarCredito(Request $request)
+    {
+        $userService = new UserService();
+        return $userService->alterarCredito($request);
+    }
+
     public function tagFindAll()
     {
         $tags = new TagService();

@@ -8,6 +8,7 @@ use App\Models\CatalogoTag;
 use App\Models\Contato;
 use App\Models\Endereco;
 use App\Models\User;
+use App\Models\UserPlanos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -46,7 +47,7 @@ class UserService
     }
 
     public function findAll(){
-        return User::all();
+        return User::with("plano")->get();
     }
 
     public function alterarStatus($id)
@@ -55,5 +56,16 @@ class UserService
         $user->status = !$user->status;
         $user->save();
         return $user;
+    }
+
+    public function alterarCredito(Request $request)
+    {
+        $plano = UserPlanos::where('user_id', $request->usuario_id)->first();
+        if(!is_null($plano)){
+            $plano->num_servicos = $request->quantidade_servico;
+            $plano->num_estabelecimentos = $request->quantidade_estabelecimento;
+            $plano->save();
+        }
+        return $plano;
     }
 }

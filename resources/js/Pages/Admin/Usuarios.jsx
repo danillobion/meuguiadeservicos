@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { EditarCredito } from '@/components/Dialog/EditarCredito';
 
 export default function Usuarios() 
 {
@@ -39,19 +40,46 @@ export default function Usuarios()
             });
     };
 
+    const handleSalvarCredito = (dados) => {
+        axios.post(route('admin.usuarios.alterar-credito'), {
+            usuario_id: dados.id,
+            quantidade_servico: dados.quantidade_servico,
+            quantidade_estabelecimento: dados.quantidade_estabelecimento,
+        })
+        .then((response) => {
+                const novoPlano = response.data;
+                setUsuarios(prev =>
+                    prev.map(user =>
+                        user.id === dados.id
+                            ? {
+                                ...user,
+                                plano: {
+                                    ...user.plano,
+                                    ...novoPlano, 
+                                },
+                            }
+                            : user
+                    )
+                );
+            })
+        .catch((error) => {
+            toast.error(error.response?.data?.message || 'Erro ao atualizar o status.');
+        });
+    };
+
     const alterarStatus = (usuario_id) => {
         axios.get(route('admin.usuarios.alterar-status', { id: usuario_id }))
-            .then((response) => {
-                usuarios.map((item) => {
-                    if (item.id == usuario_id) {
-                        item.status = response.data.status;
-                    }
-                })
-                setUsuarios([...usuarios]);
+        .then((response) => {
+            usuarios.map((item) => {
+                if (item.id == usuario_id) {
+                    item.status = response.data.status;
+                }
             })
-            .catch((error) => {
-                toast.error(error.response?.data?.message || 'Erro ao atualizar o status.');
-            });
+            setUsuarios([...usuarios]);
+        })
+        .catch((error) => {
+            toast.error(error.response?.data?.message || 'Erro ao atualizar o status.');
+        });
     };
 
     useEffect(() => {
@@ -77,6 +105,12 @@ export default function Usuarios()
                                             E-mail
                                         </th>
                                         <th scope="col" className="px-6 py-3">
+                                            Crédito: Serviços
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
+                                            Crédito: Estabelecimentos
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
                                             Status
                                         </th>
                                         <th scope="col" className="px-6 py-3">
@@ -96,13 +130,26 @@ export default function Usuarios()
                                                 {item.email}
                                             </td>
                                             <td className="px-6 py-4">
+                                                {item.quantidade_servico_cadastrado}/{item.plano.num_servicos}
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                {item.quantidade_estabelecimento_cadastrado}/{item.plano.num_estabelecimentos}
+                                            </td>
+                                            <td className="px-6 py-4">
                                                 {item.status ? (
                                                     <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300">Ativo</span>
                                                 ) : (
                                                     <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">Bloqueado</span>
                                                 )}
                                             </td>
-                                            <td className="px-6 py-4 space-x-2">
+                                            <td className="px-6 py-4 space-x-2 space-y-2">
+
+                                                <EditarCredito 
+                                                    item={item} 
+                                                    quantidade_servico={item.plano.num_servicos}
+                                                    quantidade_estabelecimento={item.plano.num_estabelecimentos}
+                                                    onSalvar={handleSalvarCredito} 
+                                                />
                                             
                                                 <AlertDialog open={openConfirmId === item.id} onOpenChange={(isOpen) => {
                                                     if (!isOpen) {
