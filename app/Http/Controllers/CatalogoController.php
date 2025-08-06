@@ -187,7 +187,9 @@ class CatalogoController extends Controller
         $catalogoService = new CatalogoService();
         $verificar = $catalogoService->podeCadastrar($request['tipo']);
         if(!$verificar){
-            return redirect()->back()->with('error', "Limite de cadastros atingido. Entre em contato com o suporte para aumentar o limite.");   
+            if(is_null($request['id'])){
+                return redirect()->back()->with('error', "Limite de cadastros atingido. Entre em contato com o suporte para aumentar o limite.");   
+            }
         }
         
         $catalogoService->store($request);

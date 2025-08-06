@@ -87,8 +87,7 @@ class CatalogoService
 
             if (!is_null($request['habilidades'])) {
                 CatalogoTag::where('catalogo_id', $catalogo->id)->delete();
-
-                if ($request['habilidades']) {
+                if (!is_null($request['habilidades'])) {
                     $tagsInseridas = [];
 
                     foreach ($request['habilidades'] as $tag) {
