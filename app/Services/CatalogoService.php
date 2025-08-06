@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Enums\CatalogoTipo;
 use App\Models\Catalogo;
 use App\Models\CatalogoTag;
 use App\Models\Contato;
 use App\Models\Endereco;
 use App\Models\User;
+use App\Models\UserPlanos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -83,14 +85,23 @@ class CatalogoService
             $catalogo->tipo = $request['tipo'];
             $catalogo->save();  
 
-            if(!is_null($request['habilidades'])){
+            if (!is_null($request['habilidades'])) {
                 CatalogoTag::where('catalogo_id', $catalogo->id)->delete();
+
                 if ($request['habilidades']) {
+                    $tagsInseridas = [];
+
                     foreach ($request['habilidades'] as $tag) {
-                        $catalogoTag = new CatalogoTag();
-                        $catalogoTag->catalogo_id = $catalogo['id'];
-                        $catalogoTag->tag_id = $tag['value'];
-                        $catalogoTag->save();  
+                        $tagId = $tag['value'];
+                        
+                        if (!in_array($tagId, $tagsInseridas)) {
+                            $catalogoTag = new CatalogoTag();
+                            $catalogoTag->catalogo_id = $catalogo['id'];
+                            $catalogoTag->tag_id = $tagId;
+                            $catalogoTag->save();
+
+                            $tagsInseridas[] = $tagId;
+                        }
                     }
                 }
             }
@@ -111,6 +122,12 @@ class CatalogoService
     {
         DB::beginTransaction();
         try {
+
+            $existing = User::where('email', $request['email_login'])->first();
+
+            if ($existing) {
+                return false;
+            }
             
             $usuario = $request['novo_usuario'] ? new User() : null;
 
@@ -118,6 +135,17 @@ class CatalogoService
             $usuario->email = $request['email_login'];
             $usuario->password = Hash::make($request['senha']);
             $usuario->save(); 
+
+            if ($request['novo_usuario']) {
+                $existingPlan = UserPlanos::where('user_id', $usuario->id)->first();
+                if (!$existingPlan) {
+                    UserPlanos::create([
+                        'user_id' => $usuario->id,
+                        'num_servicos' => 2,
+                        'num_estabelecimentos' => 2,
+                    ]);
+                }
+            }
             
             DB::commit();
             if(!is_null($usuario)){
@@ -142,5 +170,22 @@ class CatalogoService
         CatalogoTag::where('catalogo_id', $catalogo->id)->delete(); 
 
         return $catalogo->delete();
+    }
+
+    public function podeCadastrar($tipo = null)
+    {
+        $userId = auth()->id();
+        $quantidadePublicacoes = Catalogo::where('user_id', $userId)->where('tipo', $tipo)->count();
+        $quantidadeLimite = UserPlanos::where('user_id', $userId)->first();
+
+        if($tipo == CatalogoTipo::SERVICO->value){
+            $resultado = $quantidadePublicacoes < $quantidadeLimite['num_servicos'];
+            return $resultado;
+        }
+        if($tipo == CatalogoTipo::ESTABELECIMENTO->value){
+            $resultado = $quantidadePublicacoes < $quantidadeLimite['num_estabelecimentos'];
+            return $resultado;
+        }
+        return false;
     }
 }

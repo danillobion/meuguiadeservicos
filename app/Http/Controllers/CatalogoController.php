@@ -49,7 +49,7 @@ class CatalogoController extends Controller
             'id' => 'nullable',
             'novo_usuario' => 'nullable', //flag
             'nome_completo' => 'required_if:novo_usuario,1|min:3',
-            'email_login' => 'required_if:novo_usuario,1|email',
+            'email_login' => 'required_if:novo_usuario,1|email|unique:users,email',
             'senha' => 'required_if:novo_usuario,1|min:8',
             'confirmacao_senha' => 'required_if:novo_usuario,1|same:senha',
         ])->validate();
@@ -57,14 +57,18 @@ class CatalogoController extends Controller
         $catalogoService = new CatalogoService();
         $resultado = $catalogoService->usuarioStore($request);
 
+        if ($resultado && $resultado == false) {
+            return redirect()->route('catalogo.index')->with('error', 'E-mail já cadastrado.');
+        }
+
         // novo usuario eu logo
-        if($resultado['id']){
+        if($resultado && $resultado['id']){
             event(new Registered($resultado));
             Auth::login($resultado);
             return redirect(route('apresentacao.index', absolute: false));
         }
         
-        return redirect()->route('login')->with('message', 'Cadastro concluído.');
+        return redirect()->route('login')->with('success', 'Cadastro concluído.');
 
     }
     public function consultarCep($cep){
@@ -106,19 +110,14 @@ class CatalogoController extends Controller
     //encontrar
     public function catalogoServicoEditar($id = null)
     {
-        $planoService = new PlanoService();
-        $credito = $planoService->credito(CatalogoTipo::SERVICO->value);
-
-        if($credito['liberado'] == false){
-            return redirect()->route('servico.listar')->with('error', $credito['mensagem']);
-        }
 
         $catalogoService = new CatalogoService();
+        
         $catalogo = $catalogoService->find($id);
 
         $tipo = CatalogoTipo::SERVICO->value;
 
-        $tags = Tag::select('id', 'nome')->where("tipo",$tipo)->get()
+        $tags = Tag::select('id', 'nome')->where("tipo",$tipo)->orderBy('nome')->get()
             ->map(function($tag) {
             return [
                 'value' => $tag->id,
@@ -134,19 +133,14 @@ class CatalogoController extends Controller
     }
     public function catalogoEstabelecimentoEditar($id = null)
     {
-        $planoService = new PlanoService();
-        $credito = $planoService->credito(CatalogoTipo::ESTABELECIMENTO->value);
-
-        if($credito['liberado'] == false){
-            return redirect()->route('servico.listar')->with('error', $credito['mensagem']);
-        }
 
         $catalogoService = new CatalogoService();
+        
         $catalogo = $catalogoService->find($id);
 
         $tipo = CatalogoTipo::ESTABELECIMENTO->value;
 
-        $tags = Tag::select('id', 'nome')->where("tipo", $tipo)->get()
+        $tags = Tag::select('id', 'nome')->where("tipo", $tipo)->orderBy('nome')->get()
             ->map(function($tag) {
             return [
                 'value' => $tag->id,
@@ -191,6 +185,11 @@ class CatalogoController extends Controller
         ])->validate();
 
         $catalogoService = new CatalogoService();
+        $verificar = $catalogoService->podeCadastrar($request['tipo']);
+        if(!$verificar){
+            return redirect()->back()->with('error', "Limite de cadastros atingido. Entre em contato com o suporte para aumentar o limite.");   
+        }
+        
         $catalogoService->store($request);
 
         if($request['tipo'] == CatalogoTipo::SERVICO->value){

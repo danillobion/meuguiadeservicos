@@ -38,6 +38,11 @@ class User extends Authenticatable
         'updated_at',
     ];
 
+    public function plano()
+    {
+        return $this->hasOne(UserPlanos::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *

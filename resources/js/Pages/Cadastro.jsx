@@ -1,7 +1,7 @@
 import InputLabel from '@/components/InputLabel';
 import TextInput from '@/components/TextInput';
 import MenuSuperior from '@/Layouts/MenuSuperior';
-import { Link, Head, useForm } from '@inertiajs/react';
+import { Link, Head, useForm, usePage } from '@inertiajs/react';
 import { AlertCircleIcon, Search, Terminal } from 'lucide-react';
 import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
 import { toast } from 'sonner';
@@ -11,8 +11,12 @@ import {
   AlertTitle,
 } from "@/components/ui/alert"
 import InputError from '@/components/InputError';
+import { useEffect } from 'react';
 
 export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
+
+  const { flash } = usePage().props;
+  
   const cabecalho = {
     titulo: 'Cadastre-se',
     migalhas: [
@@ -31,11 +35,9 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
   });
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    
+    if (e?.preventDefault) e.preventDefault();
     post(route('catalogo.store'), {
       onSuccess: () => {
-        // Nada a fazer aqui — o backend já está redirecionando
       },
       onError: () => {
         toast.error("Erro ao cadastrar.");
@@ -43,6 +45,14 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
     });
   };
 
+  useEffect(() => {
+    if (flash?.success) {
+      toast.success(flash.success);
+    }
+    if (flash?.error) {
+      toast.error(flash.error);
+    }
+  }, [flash]);
 
   return (
     <MenuSuperior>
