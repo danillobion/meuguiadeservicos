@@ -8,6 +8,7 @@ use App\Models\CatalogoTag;
 use App\Models\Contato;
 use App\Models\Endereco;
 use App\Models\User;
+use App\Models\UserPlanos;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,10 +17,13 @@ class PlanoService
 {
     public function credito($tipo = null)
     {
+        $limite = UserPlanos::where('user_id', auth()->user()->id)->first();
+        
         if($tipo == CatalogoTipo::SERVICO->value){
             $quantidade = Catalogo::where("tipo", CatalogoTipo::SERVICO)->where("user_id",auth()->user()->id)->count();
+
             
-            $disponivel = 2 - $quantidade;
+            $disponivel = $limite['num_servicos'] - $quantidade;
 
             if($disponivel == 0){
                 return [
@@ -29,18 +33,10 @@ class PlanoService
                 ];
             };
 
-            if($disponivel == 1){
+            if($disponivel > 0){
                 return [
-                    'credito' => 1,
-                    'mensagem' => ' Vocé tem 1 crédito(s) disponível(s).',
-                    'liberado' => true,
-                ];
-            };
-
-            if($disponivel == 2){
-                return [
-                    'credito' => 2,
-                    'mensagem' => ' Vocé tem 2 crédito(s) disponível(s).',
+                    'credito' => $disponivel,
+                    'mensagem' => ' Vocé tem '. $disponivel . ' crédito(s) disponível(s).',
                     'liberado' => true,
                 ];
             };
@@ -49,7 +45,7 @@ class PlanoService
         if($tipo == CatalogoTipo::ESTABELECIMENTO->value){
             $quantidade = Catalogo::where("tipo", CatalogoTipo::ESTABELECIMENTO)->where("user_id",auth()->user()->id)->count();
             
-            $disponivel = 2 - $quantidade;
+            $disponivel = $limite['num_estabelecimentos'] - $quantidade;
 
             if($disponivel == 0){
                 return [
@@ -59,18 +55,10 @@ class PlanoService
                 ];
             };
 
-            if($disponivel == 1){
+            if($disponivel > 0){
                 return [
-                    'credito' => 1,
-                    'mensagem' => ' Vocé tem 1 crédito(s) disponível(s).',
-                    'liberado' => true,
-                ];
-            };
-
-            if($disponivel == 2){
-                return [
-                    'credito' => 2,
-                    'mensagem' => ' Vocé tem 2 crédito(s) disponível(s).',
+                    'credito' => $disponivel,
+                    'mensagem' => ' Vocé tem '. $disponivel . ' crédito(s) disponível(s).',
                     'liberado' => true,
                 ];
             };
