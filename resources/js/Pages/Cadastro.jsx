@@ -156,8 +156,8 @@ export default function Cadastro({ tipos, tagServicos, tagEstabelecimentos }) {
         <div className="text-center mt-4 text-gray-500 text-sm">
           <span>
             Ao clicar em "Salvar", você concorda com os{' '}
-            <a href="#" className="text-blue-500 hover:text-blue-700">Termos e Condições</a> e{' '}
-            <a href="#" className="text-blue-500 hover:text-blue-700">Política de Privacidade</a>.
+            <a href="/termos-de-uso-e-privacidade" className="text-blue-500 hover:text-blue-700">Termos e Condições</a> e{' '}
+            <a href="/termos-de-uso-e-privacidade" className="text-blue-500 hover:text-blue-700">Política de Privacidade</a>.
           </span>
         </div>
       </div>

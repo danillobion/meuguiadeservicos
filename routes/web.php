@@ -8,7 +8,6 @@ use App\Http\Controllers\EstabelecimentoController;
 use App\Http\Controllers\ResumoController;
 use App\Http\Controllers\ServicoController;
 use App\Http\Controllers\UsuarioController;
-use App\Models\Catalogo;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -24,6 +23,10 @@ Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.in
 Route::get('/consultar-cep/{cep}', [CatalogoController::class, 'consultarCep'])->name('consultar.cep');
 Route::post('/catalogo/store', [CatalogoController::class, 'store'])->name('catalogo.store');
 Route::post('/configuracoes/atualizar', [ConfiguracaoController::class, 'atualizarConfiguracao'])->name('catalogo.atualizar');
+
+Route::get('/termos-de-uso-e-privacidade', function () {
+    return Inertia::render('TermosDeUsoEPrivacidade');
+})->name('termos-de-uso-e-privacidade');
 
 Route::middleware('auth')->group(function () {
     // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
