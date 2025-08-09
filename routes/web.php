@@ -15,10 +15,6 @@ Route::get('/', [ApresentacaoController::class, 'index'])->name('apresentacao.in
 Route::get('/pesquisar/{cidade?}/{texto?}/{tag_id?}', [ApresentacaoController::class, 'pesquisar'])->name('apresentacao.pesquisar');
 Route::get('/catalogo/{id}', [ApresentacaoController::class, 'detalhe'])->name('apresentacao.detalhe');
 
-Route::get('/como-divulgar', function () { 
-    return Inertia::render('ComoDivulgar'); 
-})->name('como-divulgar');
-
 Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
 Route::get('/consultar-cep/{cep}', [CatalogoController::class, 'consultarCep'])->name('consultar.cep');
 Route::post('/catalogo/store', [CatalogoController::class, 'store'])->name('catalogo.store');
@@ -29,9 +25,6 @@ Route::get('/termos-de-uso-e-privacidade', function () {
 })->name('termos-de-uso-e-privacidade');
 
 Route::middleware('auth')->group(function () {
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/tutorial', [ApresentacaoController::class, 'tutorial'])->name('apresentacao.tutorial');
 
@@ -47,7 +40,7 @@ Route::middleware('auth')->group(function () {
     //detalhes
     Route::get('/catalogo/servico/{id}', [CatalogoController::class, 'catalogoServicoEditar'])->name('servico.editar');
     Route::get('/catalogo/estabelecimento/{id}', [CatalogoController::class, 'catalogoEstabelecimentoEditar'])->name('estabelecimento.editar');
-    // Route::get('/catalogo/estabelecimento/{id}', [CatalogoController::class, 'catalogoEstabelecimentoEditar'])->name('estabelecimento.editar');
+    
     //salvar
     Route::post('/catalogo', [CatalogoController::class, 'catalogoSalvar'])->name('catalogo.salvar');
     //deletar
@@ -79,14 +72,12 @@ Route::middleware(['auth', 'root'])->group(function () {
 
     Route::get('/admin/catalogos', [AdminController::class, 'catalogosIndex'])->name('admin.catalogos.index');
     Route::get('/admin/catalogos/find-all', [AdminController::class, 'catalogosFindAll'])->name('admin.catalogos.find-all');
-
     
     Route::get('/admin/tags', [AdminController::class, 'tagIndex'])->name('admin.tags.index');
     Route::get('/admin/tags/find-all', [AdminController::class, 'tagFindAll'])->name('admin.tags.find-all');
     Route::post('/admin/tags', [AdminController::class, 'tagSalvar'])->name('admin.tags.salvar');
     Route::put('/admin/tags/{id}', [AdminController::class, 'tagAtualizar'])->name('admin.tags.atualizar');
     Route::delete('/admin/tags', [AdminController::class, 'tagDeletar'])->name('admin.tags.deletar');
-
 
 });
 

@@ -51,10 +51,10 @@ class ConfiguracaoController extends Controller
             ];
         });
 
-        return Inertia::render('Configuracoes/Estabelecimento',[
-            'catalogo' => $catalogo,
-            'tagEstabelecimentos' => $tagEstabelecimentos
-        ]);
+        // return Inertia::render('Configuracoes/Estabelecimento',[
+        //     'catalogo' => $catalogo,
+        //     'tagEstabelecimentos' => $tagEstabelecimentos
+        // ]);
     }
 
     public function acessoIndex()

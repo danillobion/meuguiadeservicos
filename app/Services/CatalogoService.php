@@ -160,15 +160,26 @@ class CatalogoService
 
     public function deletar($id)
     {
-        $catalogo = Catalogo::find($id);
+        DB::beginTransaction();
+        try {
+            $catalogo = Catalogo::find($id);
 
-        if (!$catalogo) {
-            return false;
+            if (!$catalogo) {
+                return false;
+            }
+
+            Endereco::where('id', $catalogo->endereco_id)->delete();
+            CatalogoTag::where('catalogo_id', $catalogo->id)->delete(); 
+
+            $catalogo->delete();
+
+            DB::commit();
+            return $catalogo;
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            throw $e;
         }
-
-        CatalogoTag::where('catalogo_id', $catalogo->id)->delete(); 
-
-        return $catalogo->delete();
     }
 
     public function podeCadastrar($tipo = null)

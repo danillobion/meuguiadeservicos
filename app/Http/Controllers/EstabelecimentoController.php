@@ -13,12 +13,12 @@ class EstabelecimentoController extends Controller
 {
     public function index()
     {
-        $service = new CatalogoService();
-        $catalogos = $service->findAll(CatalogoTipo::ESTABELECIMENTO->value);
+        // $service = new CatalogoService();
+        // $catalogos = $service->findAll(CatalogoTipo::ESTABELECIMENTO->value);
 
-        return Inertia::render('Estabelecimento/Page',[
-            'estabelecimentos' => $catalogos,
-        ]);
+        // return Inertia::render('Estabelecimento/Page',[
+        //     'estabelecimentos' => $catalogos,
+        // ]);
         
     }
 
