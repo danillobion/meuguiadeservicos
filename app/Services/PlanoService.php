@@ -30,6 +30,7 @@ class PlanoService
                     'credito' => 0,
                     'mensagem' => ' Vocé tem 0 crédito(s) disponível(s).',
                     'liberado' => false,
+                    'quantidade' => $limite['num_servicos'] - $quantidade
                 ];
             };
 
@@ -38,6 +39,7 @@ class PlanoService
                     'credito' => $disponivel,
                     'mensagem' => ' Vocé tem '. $disponivel . ' crédito(s) disponível(s).',
                     'liberado' => true,
+                    'quantidade' => $limite['num_servicos'] - $quantidade
                 ];
             };
         }
@@ -52,6 +54,7 @@ class PlanoService
                     'credito' => 0,
                     'mensagem' => ' Vocé tem 0 crédito(s) disponível(s).',
                     'liberado' => false,
+                    'quantidade' => $limite['num_estabelecimentos'] - $quantidade
                 ];
             };
 
@@ -60,6 +63,7 @@ class PlanoService
                     'credito' => $disponivel,
                     'mensagem' => ' Vocé tem '. $disponivel . ' crédito(s) disponível(s).',
                     'liberado' => true,
+                    'quantidade' => $limite['num_estabelecimentos'] - $quantidade
                 ];
             };
         }

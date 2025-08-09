@@ -1,9 +1,13 @@
 
 import { AlertCircleIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
+import { InfoCredito } from "../Dialog/InfoCredito";
+import { useState } from "react";
 
 export default function CabecalhoPagina({ cabecalho }) {
   const { titulo, migalhas, aviso } = cabecalho;
+
+  const [open, setOpen] = useState(false);
   
   return (
     <>
@@ -32,19 +36,28 @@ export default function CabecalhoPagina({ cabecalho }) {
       </div>
       <div className="pb-3">
         {aviso && (
-            <Alert
-              variant="default"
-              className="bg-yellow-100 flex items-center gap-2 border-0 rounded-lg p-2 space-x-2"
+          <>
+            <button 
+              onClick={() => setOpen(true)} 
+              type="button" 
+              className="w-full"
             >
-              <AlertCircleIcon className="w-5 h-5 mt-0" />
-              <div>
-                <AlertTitle 
-                  className="text-sm font-normal mt-3"
-                >
-                  {aviso?.titulo}: {aviso?.mensagem}
-                </AlertTitle>
-              </div>
-            </Alert>
+              <Alert
+                variant="default"
+                className="bg-yellow-100 flex items-center gap-2 border-0 rounded-lg p-2 space-x-2 hover:shadow-lg transition-shadow duration-500"
+              >
+                <AlertCircleIcon className="w-5 h-5 mt-0" />
+                <div>
+                  <AlertTitle 
+                    className="text-sm font-normal mt-3"
+                  >
+                    {aviso?.titulo}: {aviso?.mensagem}
+                  </AlertTitle>
+                </div>
+              </Alert>
+            </button>
+            <InfoCredito open={open} onClose={setOpen} dados={aviso} />
+          </>
           )}
       </div>
     </>

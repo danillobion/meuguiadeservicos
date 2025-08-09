@@ -17,8 +17,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import axios from 'axios';
-import { AlertCircleIcon, Terminal } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 export default function List({ catalogo,tipo,credito }) 
 {
@@ -33,7 +31,9 @@ export default function List({ catalogo,tipo,credito })
         ],
         aviso:{
             titulo:"Crédito",
-            mensagem:credito?.mensagem
+            mensagem:credito?.mensagem,
+            quantidade:credito?.quantidade,
+            tipo: tipo,
         }
     };
 
