@@ -14,10 +14,6 @@ export default function TermosDeUsoEPrivacidade() {
                         Bem-vindo ao <strong>Meu Guia de Serviços</strong>, uma plataforma online destinada a conectar prestadores de serviços e estabelecimentos locais com os moradores da nossa comunidade. Este documento apresenta os <strong>Termos de Uso</strong> e a <strong>Política de Privacidade</strong>, que regem o uso da nossa plataforma e explicam como tratamos seus dados pessoais, em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018). Ao utilizar o Meu Guia de Serviços, você concorda com os termos aqui descritos. Caso não concorde, por favor, não utilize a plataforma.
                     </p>
 
-                    <p class="text-gray-700 mb-6">
-                        Bem-vindo ao <strong>Meu Guia de Serviços</strong>, uma plataforma online destinada a conectar prestadores de serviços e estabelecimentos locais com os moradores da nossa comunidade. Este documento apresenta os <strong>Termos de Uso</strong> e a <strong>Política de Privacidade</strong>, que regem o uso da nossa plataforma e explicam como tratamos seus dados pessoais, em conformidade com a Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018). Ao utilizar o Meu Guia de Serviços, você concorda com os termos aqui descritos. Caso não concorde, por favor, não utilize a plataforma.
-                    </p>
-
                     <h2 class="text-2xl font-semibold mt-8 mb-4">1. Termos de Uso</h2>
 
                     <h3 class="text-xl font-medium mt-6 mb-2">1.1. Objetivo da Plataforma</h3>
