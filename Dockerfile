@@ -29,35 +29,34 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
 # Instale o Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copie os arquivos do projeto para o diretório de trabalho
+# Copie os arquivos do projeto
 COPY . .
 
-# Copie o arquivo de configuração do Apache
+# Copie configuração do Apache
 COPY config/mgs.conf /etc/apache2/sites-available/mgs.conf
 
-# Desabilite o site padrão e habilite o novo
+# Desabilite site padrão e habilite o novo
 RUN a2dissite 000-default.conf && a2ensite mgs.conf
 
-# Instale dependências do Node.js e construa o projeto
+# Instale dependências do Node.js e construa o frontend
 RUN npm install && npm install chart.js && npm run build
 
 # Instale dependências do Composer
 RUN composer install \
     && composer require league/flysystem-aws-s3-v3 laravel/socialite intervention/image --no-scripts
 
-# Ajuste permissões para pastas que precisam de escrita
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
-
 # Ajuste limites de upload e memória no PHP
 RUN echo "upload_max_filesize=100M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "post_max_size=100M" >> /usr/local/etc/php/conf.d/uploads.ini \
     && echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/memory-limit.ini
 
-# Exponha a porta 80 para o servidor web
+# Copia e aplica permissão ao entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Exponha porta 80
 EXPOSE 80
 
-# Inicie o Apache no container
+# Usa entrypoint para corrigir permissões no start
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apache2-foreground"]
