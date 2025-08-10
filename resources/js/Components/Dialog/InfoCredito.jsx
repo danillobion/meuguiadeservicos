@@ -35,9 +35,9 @@ export function InfoCredito({ open, onClose, dados }) {
         <AlertDialogFooter>
           <div className="flex flex-col gap-2 w-full">
             <a 
-              href="mailto:meuguiadeservicos@gmail.com" 
+              href="mailto:meuguiadeservicosoficial@gmail.com" 
               className="shadow-lg text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-md px-5 py-8 mb-2 text-center">
-              Enviar e-mail para meuguiadeservicos@gmail.com
+              Enviar e-mail para meuguiadeservicosoficial@gmail.com
             </a>
             <AlertDialogCancel
               onClick={() => onClose(ocultar)}
