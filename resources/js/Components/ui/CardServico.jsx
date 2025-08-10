@@ -1,15 +1,8 @@
+import { truncarTexto } from "@/utils/truncarTexto";
 import { ArrowRight, MapPin } from "lucide-react";
 
 
 export default function CardServico({ conteudo }) {
-
-  const truncarTexto = (texto) => {
-      const maxLength = 90;
-      if (texto.length > maxLength) {
-        return texto.substring(0, maxLength) + '...';
-      }
-      return texto;
-  }
     
   return (
     <div className="shadow-lg w-full sm:max-w-sm bg-white border border-gray-200 rounded-xl flex flex-col justify-between">
@@ -23,20 +16,7 @@ export default function CardServico({ conteudo }) {
                 </div>
 
                 {/* nome */}
-                <h5 className="mb-2 text-2xl font-medium tracking-tight text-gray-900">{conteudo.nome}</h5>
-                {/* <div className="mt-2 mb-2 flex flex-wrap items-center gap-2">
-                    
-                {conteudo.tipo == "EST" ? (
-                    <div className="flex items-center bg-blue-100 rounded-sm px-2 py-1">
-                        <span className="text-blue-700 text-sm font-semibold">Estabelecimento</span>
-                    </div>
-                ) : (
-                    <div className="flex items-center bg-purple-100 rounded-sm px-2 py-1">
-                        <span className="text-purple-700 text-sm font-semibold">Serviço</span>
-                    </div>
-                )}
-
-                </div> */}
+                <h5 className="mb-2 text-2xl font-medium tracking-tight text-gray-900">{truncarTexto(conteudo.nome)}</h5>
                 
                 {/* descricao */}
                 <p className="mb-3 font-normal text-gray-700">{truncarTexto(conteudo.descricao)}</p>

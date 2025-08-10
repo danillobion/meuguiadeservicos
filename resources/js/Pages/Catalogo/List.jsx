@@ -17,6 +17,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import axios from 'axios';
+import { truncarTexto } from '@/utils/truncarTexto';
 
 export default function List({ catalogo,tipo,credito }) 
 {
@@ -105,10 +106,10 @@ export default function List({ catalogo,tipo,credito })
                                         <tr className="bg-white border-b border-gray-200"
                                             key={item.id}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                                {item.nome}
+                                                {truncarTexto(item.nome, 50)}
                                             </th>
                                             <td className="px-6 py-4">
-                                                {item.descricao}
+                                                {truncarTexto(item.descricao, 50)}
                                             </td>
                                             <td className="px-6 py-4 md:space-x-1 space-y-2">
                                             <Link
