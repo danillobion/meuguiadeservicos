@@ -72,7 +72,7 @@ export default function Usuarios()
         .then((response) => {
             usuarios.map((item) => {
                 if (item.id == usuario_id) {
-                    item.status = response.data.status;
+                    item.bloqueado = response.data.bloqueado;
                 }
             })
             setUsuarios([...usuarios]);
@@ -136,7 +136,7 @@ export default function Usuarios()
                                                 {item.quantidade_estabelecimento_cadastrado}/{item.plano.num_estabelecimentos}
                                             </td>
                                             <td className="px-6 py-4">
-                                                {item.status ? (
+                                                {!item.bloqueado ? (
                                                     <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300">Ativo</span>
                                                 ) : (
                                                     <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">Bloqueado</span>
@@ -158,27 +158,27 @@ export default function Usuarios()
                                                 }}>
                                                     <AlertDialogTrigger
                                                         type="button"
-                                                        className={item.status ? "bg-gray-200 hover:bg-gray-300 text-red-600 font-bold px-4 py-2 rounded-md" : "bg-gray-200 hover:bg-gray-300 text-green-600 font-bold px-4 py-2 rounded-md"}
+                                                        className={!item.bloqueado ? "bg-gray-200 hover:bg-gray-300 text-red-600 font-bold px-4 py-2 rounded-md" : "bg-gray-200 hover:bg-gray-300 text-green-600 font-bold px-4 py-2 rounded-md"}
                                                         onClick={() => setOpenConfirmId(item.id)}
                                                         >
-                                                        {item.status ? 'Bloquear' : 'Desbloquear'}
+                                                        {!item.bloqueado ? 'Bloquear' : 'Desbloquear'}
                                                     </AlertDialogTrigger>
 
                                                     <AlertDialogContent>
                                                     <AlertDialogHeader>
-                                                        <AlertDialogTitle>Deseja {item.status ? 'bloquear' : 'desbloquear'} <b>{item.name}</b>?</AlertDialogTitle>
+                                                        <AlertDialogTitle>Deseja {!item.bloqueado ? 'bloquear' : 'desbloquear'} <b>{item.name}</b>?</AlertDialogTitle>
                                                         <AlertDialogDescription>Essa ação pode ser desfeita</AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel onClick={() => setOpenConfirmId(null)}>Cancelar</AlertDialogCancel>
                                                         <AlertDialogAction
-                                                          className={!item.status ? "bg-green-600 hover:bg-green-700 text-white font-green px-4 py-2 rounded-md" : "bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-md"}
+                                                          className={item.bloqueado ? "bg-green-600 hover:bg-green-700 text-white font-green px-4 py-2 rounded-md" : "bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2 rounded-md"}
                                                             onClick={() => {
                                                                 setOpenConfirmId(null);
                                                                 alterarStatus(item.id);
                                                             }}
                                                         >
-                                                        {item.status ? 'Sim, quero bloquear!' : 'Sim, quero desbloquear!'}
+                                                        {!item.bloqueado ? 'Sim, quero bloquear!' : 'Sim, quero desbloquear!'}
                                                         </AlertDialogAction>
                                                     </AlertDialogFooter>
                                                     </AlertDialogContent>

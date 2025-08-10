@@ -12,6 +12,7 @@ import { Search } from 'lucide-react';
 import { useEffect, useState, selectRef } from 'react';
 import TextAreaInput from '@/components/TextAreaInput';
 import ServicoOuEstabelecimentoForm from '@/components/form/ServicoOuEstabelecimentoForm';
+import { truncarTexto } from '@/utils/truncarTexto';
 
 export default function Catalogo() 
 {
@@ -80,7 +81,7 @@ export default function Catalogo()
                                         <tr className="bg-white border-b border-gray-200"
                                             key={item.id}>
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
-                                                {item.nome}
+                                                {truncarTexto(item.nome,45)}
                                             </th>
                                             <td className="px-6 py-4">
                                                 {item.endereco.cidade}/{item.endereco.uf}

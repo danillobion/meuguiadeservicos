@@ -53,7 +53,7 @@ class UserService
     public function alterarStatus($id)
     {
         $user = User::find($id);
-        $user->status = !$user->status;
+        $user->bloqueado = !$user->bloqueado;
         $user->save();
         return $user;
     }
