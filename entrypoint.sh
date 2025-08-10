@@ -1,23 +1,23 @@
 #!/bin/bash
 set -e
 
-# Corrige dono e permissões das pastas de cache do Laravel
+# Ajusta dono e permissões para as pastas de cache do Laravel
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Limpa caches do Laravel (evita arquivos antigos com permissões erradas)
+# Limpa caches para evitar problemas com arquivos antigos
 php artisan cache:clear || true
 php artisan config:clear || true
 php artisan view:clear || true
 
-# Executa as migrations (silenciosamente para não travar o container)
+# Executa migrations automaticamente (force para rodar sem prompt)
 php artisan migrate --force || true
 
-# Otimiza a aplicação
+# Otimiza a aplicação Laravel
 php artisan optimize || true
 
-# Recompila o frontend
+# Compila o frontend (vite, webpack ou npm run build)
 npm run build || true
 
-# Executa o comando original do container
-exec "$@"
+# Por fim, inicia o Apache em primeiro plano para manter o container rodando
+exec apache2-foreground

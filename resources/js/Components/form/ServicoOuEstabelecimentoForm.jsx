@@ -129,6 +129,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags, tipo }) {
                         onChange={e => setData('nome', e.target.value)}
                         className="mt-1 block w-full py-4 text-2xl"
                         placeholder={data.tipo === "SER" ? "Nome para o serviço" : "Nome do estabelecimento"}
+                        maxLength={244}
                     />
                     <InputError message={errors[`nome`]} className="mt-2" />
                 </div>
@@ -143,6 +144,7 @@ export default function ServicoOuEstabelecimentoForm({ catalogo, tags, tipo }) {
                         onChange={e => setData('descricao', e.target.value)}
                         className="mt-1 block w-full py-4 text-2xl"
                         placeholder="Descreva seu serviço"
+                        maxLength={244}
                     />
                     <InputError message={errors.descricao} className="mt-2" />
                 </div>

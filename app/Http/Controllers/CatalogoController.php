@@ -159,8 +159,8 @@ class CatalogoController extends Controller
     {
         validator($request->all(), [
             'id' => 'nullable',
-            'nome' => 'required',
-            'descricao' => 'required',
+            'nome' => 'required|max:244',
+            'descricao' => 'required|max:244',
             'tipo' => 'required',
 
             'endereco.id' => 'nullable',
