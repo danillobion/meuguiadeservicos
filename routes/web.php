@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApresentacaoController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\CatalogoController;
 use App\Http\Controllers\ConfiguracaoController;
 use App\Http\Controllers\EstabelecimentoController;
@@ -23,6 +25,25 @@ Route::post('/configuracoes/atualizar', [ConfiguracaoController::class, 'atualiz
 Route::get('/termos-de-uso-e-privacidade', function () {
     return Inertia::render('TermosDeUsoEPrivacidade');
 })->name('termos-de-uso-e-privacidade');
+
+Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.request');
+
+// Enviar o link por e-mail
+Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.email');
+
+// Página para redefinir senha (via link do e-mail)
+Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+    ->middleware('guest')
+    ->name('password.reset');
+
+// Enviar nova senha para atualização
+Route::post('/reset-password', [NewPasswordController::class, 'store'])
+    ->middleware('guest')
+    ->name('password.update');
 
 Route::middleware(['auth', 'bloquear'])->group(function () {
 

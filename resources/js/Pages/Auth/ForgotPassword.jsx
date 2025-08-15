@@ -20,14 +20,12 @@ export default function ForgotPassword({ status }) {
             <Head title="Forgot Password" />
 
             <div className="mb-4 text-sm text-gray-600">
-                Forgot your password? No problem. Just let us know your email
-                address and we will email you a password reset link that will
-                allow you to choose a new one.
+                Esqueceu sua senha? Sem problema. Basta nos informar o seu endereço de e-mail e nós lhe enviaremos um link para redefinição de senha, que permitirá que você escolha uma nova.
             </div>
 
             {status && (
                 <div className="mb-4 text-sm font-medium text-green-600">
-                    {status}
+                    Link enviado para o seu e-mail. Caso não encontre, verifique sua caixa de spam.
                 </div>
             )}
 
@@ -42,11 +40,16 @@ export default function ForgotPassword({ status }) {
                     onChange={(e) => setData('email', e.target.value)}
                 />
 
-                <InputError message={errors.email} className="mt-2" />
+                {errors.email  && (
+                    <div className="mt-2 text-sm text-red-600">
+                        Aguarde um tempo para reenviar o link de redefinição de senha.
+                    </div>
+                )}
+                {/* <InputError message={errors.email} className="mt-2" /> */}
 
                 <div className="mt-4 flex items-center justify-end">
                     <PrimaryButton className="ms-4" disabled={processing}>
-                        Email Password Reset Link
+                        Enviar link para o e-mail
                     </PrimaryButton>
                 </div>
             </form>
