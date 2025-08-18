@@ -21,6 +21,7 @@ class Catalogo extends Model
         'nome',
         'descricao',
         'tipo',
+        'ativo',
     ];
     
     protected $appends = ['created_at_formatado'];

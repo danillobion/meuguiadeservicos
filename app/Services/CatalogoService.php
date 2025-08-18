@@ -168,6 +168,10 @@ class CatalogoService
                 return false;
             }
 
+            if($catalogo['ativo'] == false){
+                return false;
+            }
+
             Endereco::where('id', $catalogo->endereco_id)->delete();
             CatalogoTag::where('catalogo_id', $catalogo->id)->delete(); 
 
@@ -180,6 +184,14 @@ class CatalogoService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function alterarStatus($id)
+    {
+        $catalogo = Catalogo::find($id);
+        $catalogo->ativo = !$catalogo->ativo;
+        $catalogo->save();
+        return $catalogo;
     }
 
     public function podeCadastrar($tipo = null)

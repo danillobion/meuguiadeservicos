@@ -10,6 +10,7 @@ use App\Http\Controllers\EstabelecimentoController;
 use App\Http\Controllers\ResumoController;
 use App\Http\Controllers\ServicoController;
 use App\Http\Controllers\UsuarioController;
+use App\Models\Catalogo;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -91,6 +92,8 @@ Route::middleware(['auth', 'bloquear'])->group(function () {
 
         Route::get('/admin/catalogos', [AdminController::class, 'catalogosIndex'])->name('admin.catalogos.index');
         Route::get('/admin/catalogos/find-all', [AdminController::class, 'catalogosFindAll'])->name('admin.catalogos.find-all');
+
+        Route::get('/admin/catalogos/alterar-status/{id}', [CatalogoController::class, 'catalogoAlterarStatus'])->name('admin.catalogos.alterar-status');
         
         Route::get('/admin/tags', [AdminController::class, 'tagIndex'])->name('admin.tags.index');
         Route::get('/admin/tags/find-all', [AdminController::class, 'tagFindAll'])->name('admin.tags.find-all');

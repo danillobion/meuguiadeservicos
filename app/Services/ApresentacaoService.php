@@ -39,6 +39,7 @@ class ApresentacaoService
                 $query->where('tag_id', $tagId);
             });
         }
+        $query->where('ativo', true);
         $query->orderBy('created_at', 'desc');
         $resposta = $query->get();
         return $resposta;

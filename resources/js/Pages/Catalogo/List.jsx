@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import axios from 'axios';
 import { truncarTexto } from '@/utils/truncarTexto';
+import { Acao } from '@/components/Dialog/Acao';
 
 export default function List({ catalogo,tipo,credito }) 
 {
@@ -105,8 +106,27 @@ export default function List({ catalogo,tipo,credito })
                                     {catalogo && catalogo.map((item) => (
                                         <tr className="bg-white border-b border-gray-200"
                                             key={item.id}>
-                                            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                                            <th scope="row" className="flex px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                                 {truncarTexto(item.nome, 50)}
+                                                {item.ativo ? "" :(
+                                                    <Acao 
+                                                        item={item} 
+                                                        titulo={item.tipo == "EST" ? "Estabelecimento bloqueado!" : "Serviço bloqueado!"}
+                                                        subtitulo={
+                                                            item.tipo == "EST" ? 
+                                                            `Estabelecimento (${item.nome}) foi bloqueado pelo administrador. Por favor, entre em contato com o administrador.` : 
+                                                            `Serviço (${item.nome}) foi bloqueado pelo administrador. Por favor, entre em contato com o administrador.`}
+    
+                                                        botaoAbrirTexto={item.tipo == "EST" ? "Estabelecimento bloqueado!" : "Serviço bloqueado!"}
+                                                        botaoAbrirCor="mr-2 ml-2 bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300 hover:bg-red-200 hover:text-red-600 transition duration-300 ease-in-out"
+    
+                                                        botaoAcao={false}
+    
+                                                        botaoCancelar={true}
+                                                        botaoCancelarTexto="Fechar"
+    
+                                                    />
+                                                )}
                                             </th>
                                             <td className="px-6 py-4">
                                                 {truncarTexto(item.descricao, 50)}

@@ -114,6 +114,16 @@ class CatalogoController extends Controller
         $catalogoService = new CatalogoService();
         
         $catalogo = $catalogoService->find($id);
+        
+        //verifica se o item do catalogo esta bloqueado
+        if(!is_null($catalogo) && $catalogo['ativo'] == false){
+            $mensagem = $catalogo['tipo'] == CatalogoTipo::SERVICO->value ? 'Serviço bloqueado!' : 'Estabelecimento bloqueado!';
+            
+            if($catalogo['tipo'] == CatalogoTipo::SERVICO->value){
+                return redirect()->route('servico.listar')->with('error',$mensagem);
+            }
+            return redirect()->route('estabelecimento.listar')->with('error',$mensagem);
+        }
 
         $tipo = CatalogoTipo::SERVICO->value;
 
@@ -137,6 +147,16 @@ class CatalogoController extends Controller
         $catalogoService = new CatalogoService();
         
         $catalogo = $catalogoService->find($id);
+
+        //verifica se o item do catalogo esta bloqueado
+        if(!is_null($catalogo) && $catalogo['ativo'] == false){
+            $mensagem = $catalogo['tipo'] == CatalogoTipo::SERVICO->value ? 'Serviço bloqueado!' : 'Estabelecimento bloqueado!';
+            
+            if($catalogo['tipo'] == CatalogoTipo::SERVICO->value){
+                return redirect()->route('servico.listar')->with('error',$mensagem);
+            }
+            return redirect()->route('estabelecimento.listar')->with('error',$mensagem);
+        }
 
         $tipo = CatalogoTipo::ESTABELECIMENTO->value;
 
@@ -213,5 +233,12 @@ class CatalogoController extends Controller
             'message' => $catalogo['tipo']  == CatalogoTipo::SERVICO->value ? 'Serviço excluído.' : 'Estabelecimento excluído.',
             'tipo' => $catalogo['tipo'],
         ]);
+    }
+
+    //alterar status
+    public function catalogoAlterarStatus($id)
+    {
+        $catalogo = new CatalogoService();
+        return $catalogo->alterarStatus($id);
     }
 }

@@ -61,7 +61,7 @@ class ApresentacaoController extends Controller
             'endereco' => function ($query) {
                 $query->select('id', 'cidade', 'uf');
             }
-        ])->findOrFail($id);
+        ])->where("ativo", true)->findOrFail($id);
 
         return Inertia::render('Detalhe',[
             'catalogo' => $catalogo

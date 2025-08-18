@@ -1,18 +1,10 @@
-import InputLabel from '@/components/InputLabel';
-import SelectInput from '@/components/SelectInput';
-import TextInput from '@/components/TextInput';
-import AbasPagina from '@/components/ui/AbasPagina';
 import CabecalhoPagina from '@/components/ui/CabecalhoPagina';
 import MenuSuperior from '@/Layouts/MenuSuperior';
-import { formatarCep } from '@/utils/formatarCEP';
-import { formatarTelefone } from '@/utils/formatarTelefone';
-import Select from 'react-select';
-import { Head, useForm, Link } from '@inertiajs/react';
-import { Search } from 'lucide-react';
-import { useEffect, useState, selectRef } from 'react';
-import TextAreaInput from '@/components/TextAreaInput';
-import ServicoOuEstabelecimentoForm from '@/components/form/ServicoOuEstabelecimentoForm';
+import { Head} from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 import { truncarTexto } from '@/utils/truncarTexto';
+import { Acao } from '@/components/Dialog/Acao';
+import { toast } from 'sonner';
 
 export default function Catalogo() 
 {
@@ -35,6 +27,21 @@ export default function Catalogo()
                 toast.error(error.response?.data?.message || 'Erro ao buscar catalogo.');
             });
     };
+
+    const handleAlterarStatusCatalogo = (itemCatalogo) => {
+        axios.get(route('admin.catalogos.alterar-status', { id: itemCatalogo.id }))
+        .then((response) => {
+            catalogo.map((item) => {
+                if (item.id == itemCatalogo.id) {
+                    item.ativo = response.data.ativo;
+                }
+            })
+            setCatalogo([...catalogo]);
+        })
+        .catch((error) => {
+            toast.error(error.response?.data?.message || 'Erro ao atualizar o status.');
+        });
+    }
 
     useEffect(() => {
         findAll();
@@ -68,11 +75,14 @@ export default function Catalogo()
                                             Tipo
                                         </th>
                                         <th scope="col" className="px-6 py-3">
+                                            Ativo
+                                        </th>
+                                        <th scope="col" className="px-6 py-3">
                                             Data de criação
                                         </th>
-                                        {/* <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3">
                                             Ações
-                                        </th> */}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -83,7 +93,7 @@ export default function Catalogo()
                                             <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                                 {truncarTexto(item.nome,45)}
                                             </th>
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4 min-w-[250px]">
                                                 {item.endereco.cidade}/{item.endereco.uf}
                                             </td>
                                             <td className="px-6 py-4">
@@ -94,13 +104,42 @@ export default function Catalogo()
                                                 )}
                                             </td>
                                             <td className="px-6 py-4">
+                                                {item.ativo ? (
+                                                    <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-green-900 dark:text-green-300">Ativo</span>
+                                                ) : (
+                                                    <span className="bg-red-100 text-red-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-red-900 dark:text-red-300">Inativo</span>
+                                                )}
+                                            </td>
+                                            <td className="px-6 py-4 min-w-[250px]">
                                                 {item.created_at_formatado}
                                             </td>
-                                            <td>
-                                                {/* <EditarTag 
+                                            <td className="px-6 py-4 space-x-2">
+                                                <Acao 
                                                     item={item} 
-                                                    onSalvar={handleSalvarTag} 
-                                                /> */}
+                                                    titulo={item.ativo ? "Inativar catalogo" : "Ativar catalogo"}
+                                                    subtitulo={
+                                                        item.ativo ? 
+                                                        `Voce deseja inativar este catalogo: ${item.nome}?` : 
+                                                        `Voce deseja ativar este catalogo: ${item.nome}?`}
+
+                                                    botaoAbrirTexto={item.ativo ? "Inativar" : "Ativar"}
+                                                    botaoAbrirCor={item.ativo ? 
+                                                        "bg-gray-50 hover:bg-gray-100 text-red-500 px-4 py-2 rounded-md border border-gray-300" : 
+                                                        "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md border border-gray-300"
+                                                    }
+
+                                                    botaoCancelar={true}
+                                                    botaoCancelarTexto="Cancelar"
+
+                                                    botaoAcao={true}
+                                                    botaoAcaoTexto={item.ativo ? "Inativar" : "Ativar"}
+                                                    botaoAcaoCor={item.ativo ? 
+                                                        "bg-gray-50 hover:bg-gray-100 text-red-500 px-4 py-2 rounded-md border border-gray-300" : 
+                                                        "bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md border border-gray-300"
+                                                    }
+
+                                                    onAcao={handleAlterarStatusCatalogo} 
+                                                />
                                             </td>
                                         </tr>
                                     ))}
