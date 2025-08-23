@@ -17,15 +17,21 @@ class ApresentacaoService
     public function listarServicos($cidade = "-", $texto = "-", $tagId = "-")
     {
         $query = Catalogo::query();
-        $query->with(['tags', 'endereco']);
 
-        if (!empty($cidade) && $cidade != '-') {
+        $query->with([
+            'tags',
+            'endereco' => function ($q) {
+                $q->select('id', 'cidade', 'uf');
+            }
+        ]);
+
+        if ($cidade && $cidade !== '-') {
             $query->whereHas('endereco', function ($q) use ($cidade) {
                 $q->where('cidade', $cidade);
             });
         }
 
-        if (!is_null($texto) && $texto !== '-') {
+        if ($texto && $texto !== '-') {
             $query->where(function ($q) use ($texto) {
                 $q->where('nome', 'like', '%' . $texto . '%')
                 ->orWhereHas('tags', function ($sub) use ($texto) {
@@ -34,14 +40,16 @@ class ApresentacaoService
             });
         }
 
-        if(!is_null($tagId) && $tagId != '-'){
-            $query->whereHas('tags', function ($query) use ($tagId) {
-                $query->where('tag_id', $tagId);
+        if ($tagId && $tagId !== '-') {
+            $query->whereHas('tags', function ($q) use ($tagId) {
+                $q->where('id', $tagId); // ou 'tag_id' se for campo da pivot
             });
         }
-        $query->where('ativo', true);
-        $query->orderBy('created_at', 'desc');
-        $resposta = $query->get();
-        return $resposta;
+
+        $query->where('ativo', true)
+            ->orderBy('created_at', 'desc');
+
+        return $query->get();
     }
+
 }

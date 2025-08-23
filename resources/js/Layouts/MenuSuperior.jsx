@@ -6,6 +6,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useState } from 'react';
 import { Toaster } from "@/components/ui/sonner";
 import { formatarNome } from '@/utils/formatarNome';
+import { Instagram } from 'lucide-react';
 
 function AdminLinks({ isMobile = false }) {
   const user = usePage().props.auth.user;
@@ -36,6 +37,18 @@ export default function MenuSuperior({ header, children }) {
   return (
     <div className="min-h-screen bg-gray-100">
       <nav className="border-b border-gray-100 bg-white">
+        {/* link do instagram */}
+        <div className='bg-gradient-to-r from-blue-500 to-purple-600'> 
+          <div className='mx-auto max-w-7xl p-2 sm:px-6 lg:px-8 text-white flex items-center justify-end'>
+            Estamos no Insta 👉 
+            <Instagram className='inline-block ml-2 mr-2' /> 
+            <a 
+              href="https://www.instagram.com/meuguiadeservicos/" 
+              target="_blank"
+              className='font-bold'
+            >@meuguiadeservicos</a>
+          </div>
+        </div>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">
             <div className="flex">
