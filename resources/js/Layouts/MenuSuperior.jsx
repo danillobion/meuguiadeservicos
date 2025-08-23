@@ -51,65 +51,90 @@ export default function MenuSuperior({ header, children }) {
         </div>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 justify-between">
+            
             <div className="flex">
               <div className="flex shrink-0 items-center">
                 <Link href="/">
-                  <ApplicationLogo className="block h-6 w-auto fill-current text-gray-800" />
+                  <ApplicationLogo className="block h-8 sm:h-6 w-auto fill-current text-gray-800" />
                 </Link>
               </div>
             </div>
 
             <div className="hidden sm:flex sm:items-center sm:ms-6">
               {user === null ? (
-                <div className="hidden space-x-3 sm:flex">
-                  <NavLink href={route('catalogo.index')} active={route().current('catalogo.index')}>Cadastre-se</NavLink>
-                  <NavLink href={route('login')} active={route().current('login')}>Entrar</NavLink>
+                // <div className="hidden space-x-3 sm:flex">
+                //   <NavLink href={route('catalogo.index')} active={route().current('catalogo.index')}>Cadastre-se</NavLink>
+                //   <NavLink href={route('login')} active={route().current('login')}>Entrar</NavLink>
+                // </div>
+                <div className='space-x-1'>
+                  <Link
+                    href={route('catalogo.index')}
+                    className="rounded-full shadow-md text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+                  >Cadastre-se</Link>
+                  <Link
+                    href={route('login')}
+                    className="rounded-full text-black bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm px-3 py-2 text-center me-2 mb-2"
+                  >Entrar</Link>
                 </div>
               ) : (
-                <Dropdown>
-                  <Dropdown.Trigger>
-                    <button type="button" className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none">
-                      Olá, {formatarNome(user.name)}
-                      <svg className="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                      </svg>
-                    </button>
-                  </Dropdown.Trigger>
-                  <Dropdown.Content>
-                    <AdminLinks />
-                    <Dropdown.Link href={route('servico.listar')}>Meus serviços</Dropdown.Link>
-                    <Dropdown.Link href={route('estabelecimento.listar')}>Meus estabelecimentos</Dropdown.Link>
-                    <Dropdown.Link href={route('meus-dados.index')}>Meus dados</Dropdown.Link>
-                    <Dropdown.Link
-                      href={route('logout')}
-                      method="post"
-                      as="button"
-                      onClick={() => setShowingNavigationDropdown(false)}
-                    >
-                      Sair
-                    </Dropdown.Link>
-                  </Dropdown.Content>
-                </Dropdown>
+                  <Dropdown>
+                    <Dropdown.Trigger>
+                      <button type="button" className="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none">
+                        Olá, {formatarNome(user.name)}
+                        <svg className="ms-2 -me-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </Dropdown.Trigger>
+                    <Dropdown.Content>
+                      <AdminLinks />
+                      <Dropdown.Link href={route('servico.listar')}>Meus serviços</Dropdown.Link>
+                      <Dropdown.Link href={route('estabelecimento.listar')}>Meus estabelecimentos</Dropdown.Link>
+                      <Dropdown.Link href={route('meus-dados.index')}>Meus dados</Dropdown.Link>
+                      <Dropdown.Link
+                        href={route('logout')}
+                        method="post"
+                        as="button"
+                        onClick={() => setShowingNavigationDropdown(false)}
+                      >
+                        Sair
+                      </Dropdown.Link>
+                    </Dropdown.Content>
+                  </Dropdown>
               )}
             </div>
 
             <div className="flex items-center sm:hidden -me-2">
-              <button
-                onClick={() => setShowingNavigationDropdown(prev => !prev)}
-                className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                aria-label="Toggle navigation menu"
-              >
-                {!showingNavigationDropdown ? (
-                  <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                ) : (
-                  <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                )}
-              </button>
+              {user === null ? (
+                <div className='space-x-1'>
+                  <Link
+                    href={route('catalogo.index')}
+                    className="rounded-full shadow-md text-white bg-gradient-to-br from-pink-500 to-orange-400 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-pink-200 font-medium rounded-lg text-sm px-3 py-2 text-center me-2 mb-2"
+                  >Cadastre-se</Link>
+                  <Link
+                    href={route('login')}
+                    className="rounded-full text-black bg-gray-200 hover:bg-gray-300 font-medium rounded-lg text-sm px-3 py-2 text-center me-2 mb-2"
+                  >Entrar</Link>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowingNavigationDropdown(prev => !prev)}
+                  className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
+                  aria-label="Toggle navigation menu"
+                >
+                  {!showingNavigationDropdown ? (
+                    <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                  ) : (
+                    <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  )}
+                </button>
+              )}
             </div>
+            
           </div>
         </div>
 
