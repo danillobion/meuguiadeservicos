@@ -42,7 +42,7 @@ class ApresentacaoService
 
         if ($tagId && $tagId !== '-') {
             $query->whereHas('tags', function ($q) use ($tagId) {
-                $q->where('id', $tagId); // ou 'tag_id' se for campo da pivot
+                $q->where('tags.id', $tagId);
             });
         }
 
